@@ -12,7 +12,7 @@
     top             : 0px;
     background-color: #0072E3;
     width           : 100%;
-    height          : 100px;
+    height          : 80px;
     box-shadow      : rgb(0 0 0 / 30%) 0 2px 6px;
     display         : flex;
     justify-content : center;  
@@ -32,6 +32,19 @@
 
 .TitleIcon{
     height          : 50px;
+}
+
+.TimeText{
+    position        : absolute;
+    right           : 2%;
+    font-size       : 30px;
+    font-family     : Arial, Helvetica, sans-serif;
+    text-shadow     : 2px 2px black;
+    color           : #FFF;
+    display         : flex;
+    align-items     : center;
+    justify-content : flex-start;
+
 }
 
 .LoginCon{
@@ -80,6 +93,7 @@
     font-size: 16px;
     font-family     : Arial, Helvetica, sans-serif;
  }
+ 
 
 [placeholder]:focus::-webkit-input-placeholder {
     transition: text-indent 0.4s 0.4s ease; 
