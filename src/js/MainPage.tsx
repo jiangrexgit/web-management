@@ -5,6 +5,7 @@ import icon from '../image/img-user.png';
 import enterIcon from '../image/enter.png';
 import userIcon from '../image/user.png';
 import passwordIcon from '../image/password.png';
+import CheckInRecord from './CheckInRecord';
 
 interface MainPageProps {
 }
@@ -75,7 +76,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     </div>
                     <div className={style.MiddleBlock}>{
                         funcName.map((key, index) =>
-                            <div key={"tag" + key} className={index === tagSelect ? style.LeftCol_Select : style.LeftCol}
+                            <div key={"tag" + key} className={style.funcBlock}
                                 onClick={() => { this.setTagSelect(index) }}>
 
                                 {(funcName[index]['func'] as []).map((key_1, index_1) => {
@@ -89,9 +90,8 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     </div>
 
                     <div className={style.RightBlock}>
-                        {
-                            <Calendar />
-                        }
+                        {<Calendar />}
+                        {<CheckInRecord />}
                     </div>
                 </div>
             </div>

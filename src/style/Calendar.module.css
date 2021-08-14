@@ -5,11 +5,10 @@
 
 .CalendarBorder {
     width: 95%;
-    height: 45%;
+    height: 40%;
     border: 1px solid #92B9B9;
     border-top: 5px solid #0072E3;
-    position: absolute;
-    bottom:20px
+	background:#FFFFFF
 }
 
 .HeaderBorder {
