@@ -118,8 +118,8 @@ class Calendar extends Component<CalendarProps, CalendarState> {
         return (
             <div className={style.CalendarBorder}>
                 <div className={style.HeaderBorder}>
-                    <p>20月</p>
-                    <p>2015年</p>
+                    <p>{year + "年"}</p>
+                    <p>{month + "月"}</p>
                     <p className={style.TriangleLeft}> </p>
                     <p className={style.TriangleRight}> </p>
                 </div>
@@ -138,6 +138,10 @@ class Calendar extends Component<CalendarProps, CalendarState> {
                     <div className={style.CalendarDay}>
                         <ul>{node1}{node2}</ul>
                     </div>
+                </div>
+                <div className={style.CheckInCon}>
+                <button className={style.CheckBtn}>簽到</button>
+                <button className={style.CheckBtn}>簽退</button>
                 </div>
             </div>
         );

@@ -18,7 +18,7 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
 
         let date = new Date();
         this.state = {
-            time: date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' + date.toLocaleTimeString()
+            time: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.toLocaleTimeString()
         }
         setInterval(this.ShowTime, 1000);
     }
@@ -26,7 +26,7 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
     ShowTime = () => {
         let date = new Date();
         this.setState({
-            time: date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' + date.toLocaleTimeString()
+            time: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.toLocaleTimeString()
         })
     }
     render() {

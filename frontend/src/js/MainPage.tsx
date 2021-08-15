@@ -2,9 +2,9 @@ import React, { Component } from 'react';
 import Calendar from './Calendar'
 import style from '../style/MainPage.module.css';
 import icon from '../image/img-user.png';
-import enterIcon from '../image/enter.png';
-import userIcon from '../image/user.png';
-import passwordIcon from '../image/password.png';
+import CalendarIcon from '../image/calendar.png';
+import SalaryIcon from '../image/salary.png';
+import HumanIcon from '../image/human.png';
 import CheckInRecord from './CheckInRecord';
 
 interface MainPageProps {
@@ -20,7 +20,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
         let date = new Date();
         this.state = {
-            time: date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' + date.toLocaleTimeString(),
+            time: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.toLocaleTimeString(),
             tagSelect: 0
         }
         setInterval(this.ShowTime, 1000);
@@ -29,7 +29,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     ShowTime = () => {
         let date = new Date();
         this.setState({
-            time: date.getFullYear() + '/' + date.getMonth() + '/' + date.getDay() + ' ' + date.toLocaleTimeString()
+            time: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.toLocaleTimeString()
         })
     }
 
@@ -42,9 +42,9 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     render() {
         const { time, tagSelect } = this.state
         const funcName = [
-            { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"] },
-            { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"] },
-            { i: 3, name: "出勤系統", func: ["排班", "請假單", "加班單", "出差", "出勤紀錄"] }]
+            { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
+            { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"], icon: SalaryIcon },
+            { i: 3, name: "出勤系統", func: ["排班", "請假單", "加班單", "出差", "出勤紀錄"], icon: CalendarIcon }]
         return (
             <div className={style.FullPage}>
                 <div className={style.TitleBar}>
@@ -66,7 +66,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                         </div>
                         {
                             funcName.map((key, index) =>
-                                <div key={"tag" + key} className={index + 1 === tagSelect ? style.LeftCol_Select : style.LeftCol}
+                                <div key={"tag" + index} className={index + 1 === tagSelect ? style.LeftCol_Select : style.LeftCol}
                                     onClick={() => { this.setTagSelect(index + 1) }}>
                                     {funcName[index]['name']}
                                 </div>
@@ -76,12 +76,13 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     </div>
                     <div className={style.MiddleBlock}>{
                         funcName.map((key, index) =>
-                            <div key={"tag" + key} className={style.funcBlock}
-                                onClick={() => { this.setTagSelect(index) }}>
-
-                                {(funcName[index]['func'] as []).map((key_1, index_1) => {
-
-                                })
+                            <div key={"title_tag" + (index + 1)} className={style.funcBlock}
+                            >
+                                <div className={style.FuncTitle} onClick={() => { this.setTagSelect(index + 1) }}> {funcName[index]['name']}
+                                    <img src={funcName[index]['icon']} alt={funcName[index]['name']} className={style.FuncIcon} /></div>
+                                {(funcName[index]['func']).map((key_1, index_1) =>
+                                    <div className={style.FuncCol}>{key_1}</div>
+                                )
                                 }
                             </div>
                         )

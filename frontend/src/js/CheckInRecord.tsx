@@ -87,14 +87,23 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
             arry1[i] = (new Date(dayBefore).getMonth() + 1) + '/' + new Date(dayBefore).getDate();
         }
 
-        var node1 = arry1.map(function (item) { return <div className={style.TextCol}>{item}</div> })
+        var node1 = arry1.map(function (item) {
+            return <div className={style.TextCol}>
+                <div className={style.DateText}>{item}</div>
+                <div className={style.RecordText}>{}</div>
+                <div className={style.RecordText}>{}</div>
+                </div>
+        })
         return (
             <div className={style.CheckInRecordBorder}>
                 <div className={style.HeaderBorder}>
                     打卡紀錄
                 </div>
                 <div className={style.TextCon}>
-                    <div className={style.TextCol} style={{backgroundColor:"#94898F",color:"#3C3C3C"}}>{"簽到"}</div>
+                    <div className={style.TitleCol} style={{}}>
+                        <div className={style.TitleText} style={{}}>{"簽到"}</div>
+                        <div className={style.TitleText} style={{}}>{"簽退"}</div>
+                    </div>
                     {node1}
                 </div>
             </div>

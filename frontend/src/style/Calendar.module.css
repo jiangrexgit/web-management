@@ -5,10 +5,11 @@
 
 .CalendarBorder {
     width: 95%;
-    height: 40%;
+    height: 45%;
     border: 1px solid #92B9B9;
     border-top: 5px solid #0072E3;
-	background:#FFFFFF
+	background:#FFFFFF;
+    position: relative;
 }
 
 .HeaderBorder {
@@ -110,4 +111,24 @@ li {
 .CalendarDay li:hover{
 	background-color: #F9F7F7;
 	cursor: pointer;
+}
+
+.CheckInCon{
+	position: absolute;
+	bottom: 0px;
+	height: 30px;
+	width: 100%;
+	display: flex;    
+	justify-content: space-evenly;
+}
+
+.CheckBtn{
+	background-color: #e7e7e7; 
+	color: black;
+	width: 30%;
+    height: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 2px;
 }
