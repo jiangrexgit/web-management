@@ -1,3 +1,4 @@
+/build
 /node_modules
 node_modules/.staging/@babel/compat-data-d3cbce97/corejs2-built-ins.js
 node_modules/.staging/@babel/compat-data-d3cbce97/corejs3-shipped-proposals.js

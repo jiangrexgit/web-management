@@ -1,102 +1,149 @@
-.FullPage{
-    width           : 100%;
-    height          : 100%;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
+.FullPage {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.TitleBar{
-    position        : fixed;
-    left            : 0px;
-    top             : 0px;
+.TitleBar {
+    position: fixed;
+    left: 0px;
+    top: 0px;
     background-color: #0072E3;
-    width           : 100%;
-    height          : 80px;
-    box-shadow      : rgb(0 0 0 / 30%) 0 2px 6px;
-    display         : flex;
-    justify-content : center;  
-    align-items     : center;
+    width: 100%;
+    height: 80px;
+    box-shadow: rgb(0 0 0 / 30%) 0 2px 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.TitleText{
-    width           : 40%;
-    font-size       : 30px;
-    font-family     : Arial, Helvetica, sans-serif;
-    text-shadow     : 2px 2px black;
-    color           : #FFF;
-    display         : flex;
-    align-items     : center;
-    justify-content : flex-start;
+.TitleText {
+    width: 40%;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px black;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.TitleIcon{
-    height          : 50px;
+.TitleIcon {
+    height: 50px;
 }
 
-.TimeText{
-    position        : absolute;
-    right           : 2%;
-    font-size       : 30px;
-    font-family     : Arial, Helvetica, sans-serif;
-    text-shadow     : 2px 2px black;
-    color           : #FFF;
-    display         : flex;
-    align-items     : center;
-    justify-content : flex-start;
-
+.TimeText {
+    position: absolute;
+    right: 2%;
+    font-size: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    text-shadow: 2px 2px black;
+    color: #FFF;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
 }
 
-.LoginCon{
-    width           : 25%;
-    height          : 100%;
-    display         : flex;
-    align-items     : center;
+.LoginCon {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
-.TextCon{
-    width           : 80%;
+.TextCon {
+    width: 80%;
 }
 
-.UserCon{
-    width           : 100%;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    margin          : 20px 0px 20px 0px;
+.UserCon {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px 20px 0px;
 }
 
-.PasswordCon{
-    width           : 100%;
-    display         : flex;
-    align-items     : center;
-    justify-content : center;
-    margin          : 20px 0px 20px 0px;
+.PasswordCon {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px 0px 20px 0px;
 }
 
-.UserIcon{
-    height          : 35px;
-    
+.UserIcon {
+    height: 35px;
 }
 
-.LoginIcon{
-    width           : 20%;
-
+.LoginIcon {
+    width: 20%;
 }
 
 .Input {
-    border          :none;
-    border-bottom   : 1px solid #000;
+    border: none;
+    border-bottom: 1px solid #000;
     background-color: #D0D0D0;
-    padding         : 5px 10px;
-    outline         : none;
+    padding: 5px 10px;
+    outline: none;
     font-size: 16px;
-    font-family     : Arial, Helvetica, sans-serif;
- }
- 
+    font-family: Arial, Helvetica, sans-serif;
+}
 
 [placeholder]:focus::-webkit-input-placeholder {
-    transition: text-indent 0.4s 0.4s ease; 
+    transition: text-indent 0.4s 0.4s ease;
     text-indent: -100%;
     opacity: 1;
- }
+}
+
+.warningBG {
+    width: 100%;
+    height: 100%;
+    background: rgb(0 0 0 / 50%);
+    position: fixed;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.warningCon {
+    position: relative;
+    width: 500px;
+    height: 200px;
+    background: #FFF8D7;
+    border: 2px solid #FF5151;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.warningCancel {
+    position: absolute;
+    width: 25px;
+    height: 25px;
+    background: url(../image/cancel.png);
+    background-size: cover;
+    right: 10px;
+    top: 10px;
+}
+
+.warningText {
+    margin-left: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: bolder;
+    color: #FF5151;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.warningIcon {
+    width: 25px;
+    height: 25px;
+    background: url(../image/exclamation-mark.png);
+    background-size: cover;
+    right: 10px;
+    top: 10px;
+}

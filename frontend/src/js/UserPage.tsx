@@ -1,21 +1,19 @@
 import React, { Component, createRef, useEffect } from 'react';
 import Axios from 'axios'
 import Calendar from './Calendar'
-import style from '../style/MainPage.module.css';
+import style from '../style/UserPage.module.css';
 import icon from '../image/img-user.png';
 import CalendarIcon from '../image/calendar.png';
 import SalaryIcon from '../image/salary.png';
 import HumanIcon from '../image/human.png';
 import CheckInRecord from './CheckInRecord';
-import UserPage from './UserPage';
 
 
-interface MainPageProps {
+interface UserPageProps {
     userInfo: any;
     allUserInfo: any;
-    setIsLogin(isLogin: boolean): void;
 }
-interface MainPageState {
+interface UserPageState {
     time: string;
     tagSelect: number;
     isLogout: boolean;
@@ -24,7 +22,7 @@ interface MainPageState {
     funcOver: number;
 }
 
-class MainPage extends Component<MainPageProps, MainPageState> {
+class UserPage extends Component<UserPageProps, UserPageState> {
     constructor(props: any) {
         super(props);
 
@@ -152,10 +150,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
         }
     }
 
-    handleLogoutClick = (e: any) => {
-        this.props.setIsLogin(false);
-    }
-
     handleFuncClick = (e: any) => {
         if (e.type === 'mouseover') {
             this.setState({
@@ -172,80 +166,43 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     render() {
         const { userInfo, allUserInfo } = this.props
         const { time, tagSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
-        const funcName = [
-            { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
-            { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"], icon: SalaryIcon },
-            { i: 3, name: "出勤系統", func: ["排班", "請假單", "加班單", "出勤紀錄"], icon: CalendarIcon }]
-        if (userInfo['auth'] === "admin") { funcName[0]['func'].splice(0, 0, "新增員工") }
+        console.warn(allUserInfo);
+        let l = allUserInfo.length > 100 ? allUserInfo.length : 100
+        let ary = [];
+        for (let i = 0; i < l; i++) {
+            ary.push(<tr key={"user_" + i} >
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['id'] : ""}</td>
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['account'] : ""}</td>
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['department'] : ""}</td>
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['mail'] : ""}</td>
+            </tr>)
+        }
 
         return (
             <div className={style.FullPage}>
-                <div className={style.TitleBar}>
-                    <img src={icon} alt="" className={style.TitleIcon} />
-                    <div className={style.TitleText} onMouseOver={this.handleClick} onMouseOut={this.handleClick}>
-                        {(userInfo['account'] === "admin" ? "管理者" : userInfo['account'])}
-                        <div className={style.TitleLogOut} style={{ opacity: isLogout ? '1' : '0' }} onClick={this.handleLogoutClick}>
-                            {"登出"}
-                        </div>
-                    </div>
-
-                    <div className={style.TimeText}>
-                        {time}
-                    </div>
-
+                <div className={style.UserInfo}>
+                    <table className={style.UserTable}>
+                        <thead>
+                            <tr style={{ background: "#97CBFF", height: "30px" }}>
+                                <th colSpan={4}>員工資料</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>員工編號</td>
+                                <td>姓名</td>
+                                <td>部門</td>
+                                <td>聯絡信箱</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            {ary}
+                        </tbody>
+                    </table>
                 </div>
-                <div className={style.BottomCon}>
-                    <div className={style.LeftBlock}>
-                        <div key={"tag" + 0} className={tagSelect === 0 ? style.LeftCol_Select : style.LeftCol} id={"-1"}
-                            onClick={() => { this.setTagSelect(0) }} onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick}>
-                            {"主頁"}
-                        </div>
-                        {
-                            funcName.map((key, index) =>
-                                <div key={"tag" + index} className={index + 1 === tagSelect ? style.LeftCol_Select : style.LeftCol} id={String(index)} onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick}
-                                >
-                                    {funcName[index]['name']}
-                                </div>
-                            )
-                        }
-
-                    </div>
-
-                    {tagSelect === 0 && <div className={style.MiddleBlock}>{
-                        funcName.map((key, index) =>
-                            <div key={"title_tag" + (index + 1)} className={style.funcBlock}
-                            >
-                                <div className={style.FuncTitle} > {funcName[index]['name']}
-                                    <img src={funcName[index]['icon']} alt={funcName[index]['name']} className={style.FuncIcon} /></div>
-                                {(funcName[index]['func']).map((key_1, index_1) =>
-                                    <div className={style.FuncCol} key={funcName[index]['name'] + (index_1)} onClick={() => { this.setTagSelect(index + 1) }}>{key_1}</div>
-                                )
-                                }
-                            </div>
-                        )
-                    }
-
-                    </div>
-                    }
-
-                    {tagSelect === 0 && <div className={style.RightBlock}>
-                        {<Calendar setCheckIn={this.setCheckIn} />}
-                        {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} />}
-                    </div>}
-                    {funcName.map((key, index) =>
-                        <div key={'FuncList' + (index + 1)} className={style.FuncList} id={String(index)}
-                            style={{ top: 50 * (index + 1) + "px", display: (funcOver === index && funcOver !== -1) ? 'flex' : 'none' }}
-                            onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick} onClick={() => { this.setTagSelect(index + 1) }}>
-                            {(funcName[index]['func']).map((key_2, index_2) =>
-                                <div className={style.FuncListCol} key={"List_" + funcName[index]['name'] + (index_2)}>{key_2}</div>
-                            )}
-                        </div>
-                    )}
-                    {tagSelect === 1 && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} />}
-                </div>
-            </div>
+            </div >
         );
     }
 }
 
-export default MainPage;
+export default UserPage;

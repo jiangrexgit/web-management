@@ -6,6 +6,7 @@ import userIcon from '../image/user.png';
 import passwordIcon from '../image/password.png';
 
 interface CalendarProps {
+    setCheckIn(c: string, t: string): void
 }
 interface CalendarState {
     year: any;
@@ -96,6 +97,17 @@ class Calendar extends Component<CalendarProps, CalendarState> {
         return Weekdays;
     }
 
+    handleClick = (e: any) => {
+        let date = new Date();
+        let timeStr = date.getHours() + ":";
+        let min = date.getMinutes()
+        if (min > 10) timeStr += min
+        else timeStr = timeStr + "0" + min;
+
+        this.props.setCheckIn(e.currentTarget.id, timeStr)
+
+    }
+
     render() {
         const { month, year, day } = this.state
         const funcName = [
@@ -113,8 +125,8 @@ class Calendar extends Component<CalendarProps, CalendarState> {
             arry2[i] = (i + 1);
         }
 
-        var node1 = arry1.map(function (item) { return <li></li> })
-        var node2 = arry2.map(function (item) { return (day == item) ? <li style={{ backgroundColor: "#eee" }}>{item}</li> : <li>{item}</li> })
+        var node1 = arry1.map(function (item) { return <li key={"calCol" + item}></li> })
+        var node2 = arry2.map(function (item) { return (day == item) ? <li key={"calRow" + item} style={{ backgroundColor: "#eee" }}>{item}</li> : <li key={"calRow" + item}>{item}</li> })
         return (
             <div className={style.CalendarBorder}>
                 <div className={style.HeaderBorder}>
@@ -140,8 +152,8 @@ class Calendar extends Component<CalendarProps, CalendarState> {
                     </div>
                 </div>
                 <div className={style.CheckInCon}>
-                <button className={style.CheckBtn}>簽到</button>
-                <button className={style.CheckBtn}>簽退</button>
+                    <button className={style.CheckBtn} id="CHECK_IN" onClick={this.handleClick}>簽到</button>
+                    <button className={style.CheckBtn} id="CHECK_OUT" onClick={this.handleClick}>簽退</button>
                 </div>
             </div>
         );

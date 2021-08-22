@@ -1,6 +1,32 @@
 .FullPage{
+    width           : 90%;
+    height          : 100%;
+    display         : flex;
+    justify-content : center;  
+    align-items     : center;
+}
+
+.UserInfo{
+    width           : 90%;
+    height          : 90%;
+    background      : #FFFFFF;
+    border-top      : 2px solid #0072E3;
+    overflow-y      : auto;
+}
+
+.UserTable{
     width           : 100%;
     height          : 100%;
+    background      : #FFFFFF;
+}
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+td{
+    border: 1px solid #ddd;
+    background-color: #FFFFFF;
+    height: 20px;
 }
 
 .TitleBar{

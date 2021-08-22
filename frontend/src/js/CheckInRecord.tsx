@@ -6,6 +6,8 @@ import userIcon from '../image/user.png';
 import passwordIcon from '../image/password.png';
 
 interface CheckInRecordProps {
+    checkObj: any
+    checkInRecord: any
 }
 interface CheckInRecordState {
     year: any;
@@ -80,6 +82,7 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
 
 
     render() {
+        const { checkObj, checkInRecord } = this.props
         const { month, year, day } = this.state
         var arry1 = []
         for (var i = 6; i >= 0; i--) {
@@ -88,11 +91,13 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
         }
 
         var node1 = arry1.map(function (item) {
-            return <div className={style.TextCol}>
-                <div className={style.DateText}>{item}</div>
-                <div className={style.RecordText}>{}</div>
-                <div className={style.RecordText}>{}</div>
+            if (checkInRecord[0]) {
+                return <div className={style.TextCol} key={"CheckIn_" + item}>
+                    <div className={style.DateText}>{item}</div>
+                    <div className={style.RecordText}>{item === checkInRecord[0]['month'] + "/" + checkInRecord[0]['day'] ? checkInRecord[0]['checkin'] : ""}</div>
+                    <div className={style.RecordText}>{item === checkInRecord[0]['month'] + "/" + checkInRecord[0]['day'] ? checkInRecord[0]['checkout'] : ""}</div>
                 </div>
+            }
         })
         return (
             <div className={style.CheckInRecordBorder}>

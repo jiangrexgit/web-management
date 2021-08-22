@@ -6,28 +6,45 @@ import MainPage from './MainPage';
 interface AppProps {
 }
 interface AppState {
-  isLogin: boolean;
+  isLogin: boolean,
+  userInfo: object,
+  allUserInfo: object
 }
 class App extends Component<AppProps, AppState> {
   constructor(props: any) {
     super(props);
     this.state = {
-      isLogin: false
+      isLogin: false,
+      userInfo: {},
+      allUserInfo: []
     }
   }
 
-  setIsLogin = () => [
+  setIsLogin = (isLogin: boolean) => {
     this.setState({
-      isLogin: !this.state.isLogin
+      isLogin: isLogin
     })
-  ]
+  }
+
+  setUserInfo = (info: object) => {
+    this.setState({
+      userInfo: info
+    })
+  }
+
+
+  setAllUserInfo = (info: any) => {
+    this.setState({
+      allUserInfo: info
+    })
+  }
 
   render() {
-    const { isLogin } = this.state
+    const { isLogin, userInfo ,allUserInfo} = this.state
     return (
       <div className="App">
-        {!isLogin && <LoginPage setIsLogin={this.setIsLogin} />}
-        {isLogin && <MainPage />}
+        {!isLogin && <LoginPage setIsLogin={this.setIsLogin} setUserInfo={this.setUserInfo} setAllUserInfo={this.setAllUserInfo} />}
+        {isLogin && <MainPage setIsLogin={this.setIsLogin} userInfo={userInfo} allUserInfo={allUserInfo} />}
       </div>
     );
   }
