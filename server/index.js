@@ -59,9 +59,11 @@ app.post('/api/updateCheckIn', (req, res) => {
 
     const id = req.body.id;
     const checkin = req.body.checkin;
+    const month = req.body.month;
+    const day = req.body.day;
 
     console.log(checkin, id)
-    db.query("UPDATE checkin_record SET checkin = ? WHERE id = ?", [checkin, id], (err, result) => {
+    db.query("UPDATE checkin_record SET checkin = ? WHERE id = ? AND month = ? AND day = ?", [checkin, id, month, day], (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -101,9 +103,11 @@ app.post('/api/updateCheckOut', (req, res) => {
 
     const id = req.body.id;
     const checkout = req.body.checkout;
+    const month = req.body.month;
+    const day = req.body.day;
 
     console.log(checkout, id)
-    db.query("UPDATE checkin_record SET checkout = ? WHERE id = ?", [checkout, id], (err, result) => {
+    db.query("UPDATE checkin_record SET checkout = ? WHERE id = ? AND month = ? AND day = ?", [checkout, id, month, day], (err, result) => {
         if (err) {
             console.log(err)
         }

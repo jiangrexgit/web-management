@@ -81,29 +81,35 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     setCheckIn = (isCheckIn: string, time: string) => {
         const { userInfo } = this.props
         let recordExist: boolean = false;
+        let date = new Date();
+        let month = date.getMonth() + 1;
+        let day = date.getDate();
+        let timeStr = date.getHours() + ":";
+        let min = date.getMinutes()
+        if (min > 10) timeStr += min;
+        else timeStr = timeStr + "0" + min;
         for (let i = 0; i < this.state.checkInRecord.length; i++) {
-            if (this.state.checkInRecord[i]['id'] === userInfo['id']) {
+
+            if (this.state.checkInRecord[i]['id'] === userInfo['id'] && this.state.checkInRecord[i]['month'] === String(month) && this.state.checkInRecord[i]['day'] === String(day)) {
                 recordExist = true;
                 break;
             }
         }
 
-        let date = new Date();
-        let timeStr = date.getHours() + ":";
-        let min = date.getMinutes()
-        if (min > 10) timeStr += min;
-        else timeStr = timeStr + "0" + min;
-
         if (recordExist) {
             if (isCheckIn === "CHECK_IN") {
                 Axios.post('http://localhost:3002/api/updateCheckIn', {
                     id: userInfo['id'],
+                    month: date.getMonth() + 1,
+                    day: date.getDate(),
                     checkin: timeStr
                 }).then((data) => { this.getCheckInRecord() })
 
             } else if (isCheckIn === "CHECK_OUT") {
                 Axios.post('http://localhost:3002/api/updateCheckOut', {
                     id: userInfo['id'],
+                    month: date.getMonth() + 1,
+                    day: date.getDate(),
                     checkout: timeStr
                 }).then((data) => { this.getCheckInRecord() })
             }

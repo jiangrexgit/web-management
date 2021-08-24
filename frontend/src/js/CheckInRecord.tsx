@@ -85,19 +85,25 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
         const { checkObj, checkInRecord } = this.props
         const { month, year, day } = this.state
         var arry1 = []
-        for (var i = 6; i >= 0; i--) {
+        for (let i = 6; i >= 0; i--) {
             let dayBefore = new Date().getTime() - 24 * 60 * 60 * i * 1000;
             arry1[i] = (new Date(dayBefore).getMonth() + 1) + '/' + new Date(dayBefore).getDate();
         }
 
+        let obj: any = {}
+        let l = checkInRecord.length > 6 ? 6 : checkInRecord.length
+        for (let j = l - 1; j >= 0; j--) {
+            let key = checkInRecord[j]['month'] + "/" + checkInRecord[j]['day'];
+            obj[key] = { checkin: checkInRecord[j]['checkin'], checkout: checkInRecord[j]['checkout'] };
+        }
+
         var node1 = arry1.map(function (item) {
-            if (checkInRecord[0]) {
-                return <div className={style.TextCol} key={"CheckIn_" + item}>
-                    <div className={style.DateText}>{item}</div>
-                    <div className={style.RecordText}>{item === checkInRecord[0]['month'] + "/" + checkInRecord[0]['day'] ? checkInRecord[0]['checkin'] : ""}</div>
-                    <div className={style.RecordText}>{item === checkInRecord[0]['month'] + "/" + checkInRecord[0]['day'] ? checkInRecord[0]['checkout'] : ""}</div>
-                </div>
-            }
+            return <div className={style.TextCol} key={"CheckIn_" + item}>
+                <div className={style.DateText}>{item}</div>
+                <div className={style.RecordText}>{obj[item] ? obj[item]['checkin'] : ""}</div>
+                <div className={style.RecordText}>{obj[item] ? obj[item]['checkout'] : ""}</div>
+            </div>
+
         })
         return (
             <div className={style.CheckInRecordBorder}>
