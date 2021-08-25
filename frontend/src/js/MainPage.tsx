@@ -8,6 +8,7 @@ import SalaryIcon from '../image/salary.png';
 import HumanIcon from '../image/human.png';
 import CheckInRecord from './CheckInRecord';
 import UserPage from './UserPage';
+import AllCheckInRecord from './AllCheckInRecord';
 
 
 interface MainPageProps {
@@ -18,6 +19,7 @@ interface MainPageProps {
 interface MainPageState {
     time: string;
     tagSelect: number;
+    funcSelect: string;
     isLogout: boolean;
     checkInRecord: Array<any>;
     checkObj: object;
@@ -32,6 +34,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
         this.state = {
             time: date.getFullYear() + '/' + (date.getMonth() + 1) + '/' + date.getDate() + ' ' + date.toLocaleTimeString(),
             tagSelect: 0,
+            funcSelect: '',
             isLogout: false,
             checkInRecord: [],
             checkObj: {
@@ -63,11 +66,15 @@ class MainPage extends Component<MainPageProps, MainPageState> {
         })
     }
 
-    setTagSelect = (index: number) => {
+    setTagSelect = (index: number, func?: string) => {
         this.setState({
             tagSelect: index
         })
-
+        if (func) {
+            this.setState({
+                funcSelect: func
+            })
+        }
     }
 
     getCheckInRecord = () => {
@@ -177,11 +184,11 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
     render() {
         const { userInfo, allUserInfo } = this.props
-        const { time, tagSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
+        const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
         const funcName = [
             { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
             { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"], icon: SalaryIcon },
-            { i: 3, name: "出勤系統", func: ["排班", "請假單", "加班單", "出勤紀錄"], icon: CalendarIcon }]
+            { i: 3, name: "出勤系統", func: ["排班", "請假單", "請假紀錄", "出勤紀錄"], icon: CalendarIcon }]
         if (userInfo['auth'] === "admin") { funcName[0]['func'].splice(0, 0, "新增員工") }
 
         return (
@@ -224,7 +231,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                                 <div className={style.FuncTitle} > {funcName[index]['name']}
                                     <img src={funcName[index]['icon']} alt={funcName[index]['name']} className={style.FuncIcon} /></div>
                                 {(funcName[index]['func']).map((key_1, index_1) =>
-                                    <div className={style.FuncCol} key={funcName[index]['name'] + (index_1)} onClick={() => { this.setTagSelect(index + 1) }}>{key_1}</div>
+                                    <div className={style.FuncCol} key={funcName[index]['name'] + (index_1)} onClick={() => { this.setTagSelect(index + 1, key_1) }}>{key_1}</div>
                                 )
                                 }
                             </div>
@@ -241,13 +248,14 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     {funcName.map((key, index) =>
                         <div key={'FuncList' + (index + 1)} className={style.FuncList} id={String(index)}
                             style={{ top: 50 * (index + 1) + "px", display: (funcOver === index && funcOver !== -1) ? 'flex' : 'none' }}
-                            onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick} onClick={() => { this.setTagSelect(index + 1) }}>
+                            onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick} >
                             {(funcName[index]['func']).map((key_2, index_2) =>
-                                <div className={style.FuncListCol} key={"List_" + funcName[index]['name'] + (index_2)}>{key_2}</div>
+                                <div className={style.FuncListCol} key={"List_" + funcName[index]['name'] + (index_2)} onClick={() => { this.setTagSelect(index + 1, key_2) }}>{key_2}</div>
                             )}
                         </div>
                     )}
-                    {tagSelect === 1 && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} />}
+                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} />}
+                    {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
                 </div>
             </div>
         );

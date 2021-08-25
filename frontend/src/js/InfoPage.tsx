@@ -54,8 +54,8 @@ class UserPage extends Component<UserPageProps, UserPageState> {
         for (let i = 0; i < l; i++) {
             ary.push(<tr key={"user_" + i} >
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['id'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['department'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['name'] : ""}</td>
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['department'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['mail'] : ""}</td>
                 <td style={{
                     background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
@@ -82,8 +82,8 @@ class UserPage extends Component<UserPageProps, UserPageState> {
                         <tbody>
                             <tr>
                                 <td>員工編號</td>
-                                <td>部門</td>
                                 <td>姓名</td>
+                                <td>部門</td>
                                 <td>聯絡信箱</td>
                                 {userInfo['auth'] === 'admin' && <td style={{ width: '100px' }}>功能</td>}
                             </tr>

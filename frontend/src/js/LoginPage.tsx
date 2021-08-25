@@ -46,7 +46,7 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
     getId = (e: any) => {
         e.preventDefault();
 
-        Axios.get("http://localhost:3002/api/get").then((data) => {
+        Axios.get("http://localhost:3002/api/get").then((data:any) => {
             this.checkAccount(data.data)
             this.props.setAllUserInfo(data.data)
         });

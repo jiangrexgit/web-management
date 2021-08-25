@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
 import style from '../style/CheckInRecord.module.css';
-import icon from '../image/img-user.png';
-import enterIcon from '../image/enter.png';
-import userIcon from '../image/user.png';
-import passwordIcon from '../image/password.png';
 
 interface CheckInRecordProps {
     checkObj: any
