@@ -10,6 +10,7 @@ interface InfoPageProps {
     isSignUp: boolean
     userInfo: any;
     allUserInfo: any;
+    funcSelect: string
     setIsSignUp(flag: boolean): void
     getUserInfo(): void
 }
@@ -172,9 +173,9 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
     }
 
     render() {
-        const { isSignUp, userInfo, allUserInfo, setIsSignUp } = this.props
+        const { isSignUp, userInfo, allUserInfo, setIsSignUp, funcSelect } = this.props
         const { warn } = this.state
-
+        console.log(userInfo)
         return (
             <div className={style.FullPage}>
                 <div className={style.UserInfo}>
@@ -185,12 +186,22 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                             </tr>
                         </thead>
                         <tbody>
+                            {funcSelect == "帳號管理" && <tr>
+                                <td>ID</td>
+                                <td>
+                                    {userInfo['id']}
+                                </td>
+                            </tr>}
                             <tr>
                                 <td>帳號</td>
                                 <td>
-                                    <form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"account"} placeholder="Account" />
-                                    </form>
+                                    {
+                                        funcSelect == "帳號管理" ?
+                                            userInfo['account']
+                                            : <form onSubmit={this.onChange}>
+                                                <input className={style.Input} id={"account"} placeholder="Account" />
+                                            </form>
+                                    }
                                 </td>
                             </tr>
                             <tr>
@@ -213,7 +224,7 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                                 <td>姓名</td>
                                 <td>
                                     <form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"name"} placeholder="Name" />
+                                        <input className={style.Input} id={"name"} placeholder={funcSelect == "帳號管理" ? userInfo['name'] : "Name"} />
                                     </form>
                                 </td>
                             </tr>
@@ -221,20 +232,51 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                                 <td>信箱</td>
                                 <td>
                                     <form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"mail"} placeholder="Email" />
+                                        <input className={style.Input} id={"mail"} placeholder={funcSelect == "帳號管理" ? userInfo['mail'] : "Email"} />
                                     </form>
                                 </td>
                             </tr>
                             <tr>
                                 <td>性別</td>
                                 <td>
-                                    <select id={"gender"}>
-                                        <option>性別</option>
-                                        <option value="Male">男</option>
-                                        <option value="Feale">女</option>
-                                    </select>
+                                    {
+                                        funcSelect == "帳號管理" ?
+                                            userInfo['gender']
+                                            :
+                                            <select id={"gender"}>
+                                                <option>性別</option>
+                                                <option value="Male">男</option>
+                                                <option value="Feale">女</option>
+                                            </select>
+                                    }
                                 </td>
                             </tr>
+                            {funcSelect == "帳號管理" && <tr>
+                                <td>部門</td>
+                                <td>
+                                    {
+                                        userInfo['department']
+                                    }
+                                </td>
+                            </tr>}
+                            {funcSelect == "帳號管理" && <tr>
+                                <td>開始工作日</td>
+                                <td>
+                                    {
+
+                                        userInfo['startworking']
+                                    }
+                                </td>
+                            </tr>}
+                            {funcSelect == "帳號管理" && <tr>
+                                <td>特休</td>
+                                <td>
+                                    {
+
+                                        userInfo['vacation']
+                                    }
+                                </td>
+                            </tr>}
                         </tbody>
                     </table>
                     <div className={style.WarningText}>{warn}</div>

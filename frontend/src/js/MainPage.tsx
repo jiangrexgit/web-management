@@ -199,8 +199,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
             { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"], icon: SalaryIcon },
             { i: 3, name: "出勤系統", func: ["排班", "請假單", "請假紀錄", "出勤紀錄"], icon: CalendarIcon }]
-        if (userInfo['auth'] === "admin") { funcName[0]['func'].splice(0, 0, "新增員工") }
-
         return (
             <div className={style.FullPage}>
                 <div className={style.TitleBar}>
@@ -266,7 +264,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     )}
                     {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} />}
                     {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
-                    {isSignUp && <InfoPage isSignUp={isSignUp} userInfo={userInfo} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
+                    {(isSignUp || funcSelect === "帳號管理") && <InfoPage isSignUp={isSignUp} funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                 </div>
             </div>
         );
