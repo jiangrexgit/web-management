@@ -21,7 +21,7 @@
 
 .TitleText {
     width: 40%;
-    font-size: 30px;
+    font-size: 2vw;
     font-family: Arial, Helvetica, sans-serif;
     text-shadow: 2px 2px black;
     color: #FFF;
@@ -37,7 +37,7 @@
 .TimeText {
     position: absolute;
     right: 2%;
-    font-size: 30px;
+    font-size: 2vw;
     font-family: Arial, Helvetica, sans-serif;
     text-shadow: 2px 2px black;
     color: #FFF;
@@ -47,14 +47,19 @@
 }
 
 .LoginCon {
+    position: relative;
     width: 25%;
-    height: 100%;
+    height: 25%;
     display: flex;
     align-items: center;
+    background: #F0F0F0;
+    border-radius: 10px;
+    border: 2px solid #BEBEBE;
+    box-shadow: 6px 6px 6px #BEBEBE;
 }
 
 .TextCon {
-    width: 80%;
+    width: 75%;
 }
 
 .UserCon {
@@ -74,17 +79,31 @@
 }
 
 .UserIcon {
-    height: 35px;
+    max-width: 50px;
+    width: 20%;
+    height: 20%;
+}
+
+.Icon {
+    width: 25%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .LoginIcon {
-    width: 20%;
+    max-width: 80px;
+    max-height: 80px;
+    width: 5vw;
+    height: 5vw;
 }
 
 .Input {
+    width: 90%;
     border: none;
     border-bottom: 1px solid #000;
-    background-color: #D0D0D0;
+    background-color: #F0F0F0;
     padding: 5px 10px;
     outline: none;
     font-size: 16px;
@@ -95,6 +114,23 @@
     transition: text-indent 0.4s 0.4s ease;
     text-indent: -100%;
     opacity: 1;
+}
+
+.signUpCon{
+    position: absolute;
+    right: 5%;
+    width: 20%;
+    height: 10%;
+    bottom: 5px;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.SignUpICon{
+    background:url('../image/add-user.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 50%;
 }
 
 .warningBG {

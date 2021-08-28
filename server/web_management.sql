@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2021-08-25 17:09:15
+-- 產生時間： 2021-08-28 11:54:05
 -- 伺服器版本： 10.4.20-MariaDB
 -- PHP 版本： 7.3.29
 
@@ -28,7 +28,7 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `checkin_record` (
-  `id` int(10) NOT NULL,
+  `id` text NOT NULL,
   `account` text NOT NULL,
   `department` text NOT NULL,
   `year` text NOT NULL,
@@ -43,8 +43,10 @@ CREATE TABLE `checkin_record` (
 --
 
 INSERT INTO `checkin_record` (`id`, `account`, `department`, `year`, `month`, `day`, `checkin`, `checkout`) VALUES
-(0, 'admin', 'all', '2021', '8', '22', '17:38', '18:53'),
-(0, 'admin', 'all', '2021', '8', '25', '22:03', '22:56');
+('00000000', 'admin', 'all', '2021', '8', '22', '17:38', '18:53'),
+('00000000', 'admin', 'all', '2021', '8', '25', '22:03', '22:56'),
+('00000000', 'admin', 'all', '2021', '8', '26', '23:22', ''),
+('00000000', 'admin', 'all', '2021', '8', '28', '17:52', '17:52');
 
 -- --------------------------------------------------------
 
@@ -53,17 +55,17 @@ INSERT INTO `checkin_record` (`id`, `account`, `department`, `year`, `month`, `d
 --
 
 CREATE TABLE `user_infos` (
-  `id` int(10) NOT NULL,
+  `id` text NOT NULL,
   `account` text NOT NULL,
   `password` text NOT NULL,
   `name` text NOT NULL,
-  `auth` text NOT NULL,
+  `auth` text NOT NULL DEFAULT 'staff',
   `mail` longtext NOT NULL,
   `gender` text NOT NULL,
   `department` text NOT NULL,
   `startworking` date NOT NULL DEFAULT current_timestamp(),
-  `vacation` float NOT NULL,
-  `salary` float NOT NULL
+  `vacation` float NOT NULL DEFAULT 0,
+  `salary` float NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
@@ -71,8 +73,7 @@ CREATE TABLE `user_infos` (
 --
 
 INSERT INTO `user_infos` (`id`, `account`, `password`, `name`, `auth`, `mail`, `gender`, `department`, `startworking`, `vacation`, `salary`) VALUES
-(0, 'admin', 'admin', '管理者', 'admin', '', '', 'all', '2020-01-01', 0, 0),
-(1, 'test', 'test123', '管理者', 'admin', '', '', 'President', '2020-01-01', 0, 0);
+('00000000', 'admin', 'admin', '管理者', 'admin', '', '', 'all', '2020-01-01', 0, 0);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -19,6 +19,42 @@ app.get("/api/get", (req, res) => {
     });
 });
 
+// 刪除帳號
+app.post('/api/delete/:id', (req, res) => {
+
+    const id = req.params.id;
+    db.query("DELETE FROM user_infos WHERE id= ?", id, (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log(result)
+    });
+});
+
+
+// 新增帳號
+app.post('/api/adduser', (req, res) => {
+
+    const id = req.body.id;
+    const account = req.body.account;
+    const password = req.body.password;
+    const name = req.body.name;
+    const mail = req.body.mail;
+    const gender = req.body.gender;
+
+    console.log(id, account,name, mail, gender)
+
+
+    db.query("INSERT INTO user_infos (id, account, password, name, mail, gender) VALUES (?,?,?,?,?,?)", [id, account, password, name, mail, gender], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log(result)
+        res.send(result)
+
+    });
+})
+
 // 取打卡紀錄資料
 app.get('/api/getCheckin', (req, res) => {
     db.query("SELECT * FROM checkin_record", (err, result) => {
@@ -115,18 +151,6 @@ app.post('/api/updateCheckOut', (req, res) => {
         res.send(result)
     });
 })
-
-// Route for like
-app.post('/api/like/:id', (req, res) => {
-
-    const id = req.params.id;
-    db.query("UPDATE posts SET likes = likes + 1 WHERE id = ?", id, (err, result) => {
-        if (err) {
-            console.log(err)
-        }
-        console.log(result)
-    });
-});
 
 // Route to delete a post
 

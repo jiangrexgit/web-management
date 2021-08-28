@@ -9,6 +9,7 @@ import managementIcon from '../image/gear.png';
 interface UserPageProps {
     userInfo: any;
     allUserInfo: any;
+    getUserInfo(): void
 }
 interface UserPageState {
     time: string;
@@ -44,6 +45,10 @@ class UserPage extends Component<UserPageProps, UserPageState> {
         this.setState = () => false;
     }
 
+    deleteUser = (id: string) => {
+        Axios.post(`http://localhost:3002/api/delete/${id}`).then((data) => { this.props.getUserInfo() })
+    }
+
 
     render() {
         const { userInfo, allUserInfo } = this.props
@@ -64,7 +69,7 @@ class UserPage extends Component<UserPageProps, UserPageState> {
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    <img src={deleteIcon} alt="" className={style.iconBtn} />
+                    <img src={deleteIcon} alt="" className={style.iconBtn} onClick={() => { this.deleteUser(allUserInfo[i]['id']) }} />
                     <img src={managementIcon} alt="" className={style.iconBtn} />
                 </td>
             </tr >)

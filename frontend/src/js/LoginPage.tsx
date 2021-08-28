@@ -8,8 +8,8 @@ import passwordIcon from '../image/password.png';
 
 interface LoginPageProps {
     setIsLogin(isLogin: boolean): void;
+    setIsSignUp(flag: boolean): void;
     setUserInfo(info: object): void
-    setAllUserInfo(info: any): void
 }
 interface LoginPageState {
     time: string,
@@ -46,9 +46,8 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
     getId = (e: any) => {
         e.preventDefault();
 
-        Axios.get("http://localhost:3002/api/get").then((data:any) => {
+        Axios.get("http://localhost:3002/api/get").then((data: any) => {
             this.checkAccount(data.data)
-            this.props.setAllUserInfo(data.data)
         });
     }
 
@@ -106,7 +105,7 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
     }
     render() {
         const { time, isWarning } = this.state;
-        const { setIsLogin } = this.props
+        const { setIsSignUp } = this.props
         return (
             <div className={style.FullPage}>
                 <div className={style.TitleBar}>
@@ -125,19 +124,25 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
                     <div className={style.TextCon}>
                         <div className={style.UserCon}>
                             <img src={userIcon} alt="" className={style.UserIcon} />
-                            <form onSubmit={this.getId}>
+                            <form onSubmit={this.getId} style={{ width: '70%' }}>
                                 <input className={style.Input} id={"Account"} placeholder="Account" onChange={this.onTextChange} ref={this.accountInput} />
                             </form>
                         </div>
                         <div className={style.PasswordCon}>
                             <img src={passwordIcon} alt="" className={style.UserIcon} />
-                            <form onSubmit={this.getId}>
+                            <form onSubmit={this.getId} style={{ width: '70%' }}>
                                 <input className={style.Input} type={"password"} id={"Password"} placeholder="Password" onChange={this.onTextChange} ref={this.passwordInput} />
                             </form>
                         </div>
                     </div>
-                    <img src={enterIcon} alt="" className={style.LoginIcon} onClick={this.getId} />
+                    <div className={style.Icon}>
+                        <img src={enterIcon} alt="" className={style.LoginIcon} onClick={this.getId} />
 
+                    </div>
+                    <div className={style.signUpCon} onClick={() => { setIsSignUp(true) }}>
+                        <div className={style.SignUpICon}></div>
+                        <div style={{ width: '50%' }} >註冊</div>
+                    </div>
                 </div>
                 <div className={style.warningBG} style={{ display: isWarning ? "flex" : "none" }}>
                     <div className={style.warningCon}>

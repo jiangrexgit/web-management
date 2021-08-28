@@ -9,12 +9,16 @@ import HumanIcon from '../image/human.png';
 import CheckInRecord from './CheckInRecord';
 import UserPage from './UserPage';
 import AllCheckInRecord from './AllCheckInRecord';
+import InfoPage from './InfoPage'
 
 
 interface MainPageProps {
+    isSignUp: boolean
     userInfo: any;
     allUserInfo: any;
     setIsLogin(isLogin: boolean): void;
+    setIsSignUp(flag: boolean): void
+    getUserInfo(): void
 }
 interface MainPageState {
     time: string;
@@ -154,14 +158,17 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     }
 
     handleClick = (e: any) => {
-        if (e.type === 'mouseover') {
-            this.setState({
-                isLogout: true
-            })
-        } else if (e.type === 'mouseout') {
-            this.setState({
-                isLogout: false
-            })
+        const { isSignUp } = this.props
+        if (!isSignUp) {
+            if (e.type === 'mouseover') {
+                this.setState({
+                    isLogout: true
+                })
+            } else if (e.type === 'mouseout') {
+                this.setState({
+                    isLogout: false
+                })
+            }
         }
     }
 
@@ -170,20 +177,23 @@ class MainPage extends Component<MainPageProps, MainPageState> {
     }
 
     handleFuncClick = (e: any) => {
-        if (e.type === 'mouseover') {
-            this.setState({
-                funcOver: Number(e.currentTarget.id)
-            })
-        } else if (e.type === 'mouseout') {
-            console.warn(e.type);
-            this.setState({
-                funcOver: -1
-            })
+        const { isSignUp } = this.props
+        if (!isSignUp) {
+            if (e.type === 'mouseover') {
+                this.setState({
+                    funcOver: Number(e.currentTarget.id)
+                })
+            } else if (e.type === 'mouseout') {
+                console.warn(e.type);
+                this.setState({
+                    funcOver: -1
+                })
+            }
         }
     }
 
     render() {
-        const { userInfo, allUserInfo } = this.props
+        const { isSignUp, userInfo, allUserInfo, getUserInfo, setIsSignUp } = this.props
         const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
         const funcName = [
             { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
@@ -196,7 +206,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                 <div className={style.TitleBar}>
                     <img src={icon} alt="" className={style.TitleIcon} />
                     <div className={style.TitleText} onMouseOver={this.handleClick} onMouseOut={this.handleClick}>
-                        {(userInfo['account'] === "admin" ? "管理者" : userInfo['account'])}
+                        {(isSignUp ? "註冊會員" : userInfo['name'])}
                         <div className={style.TitleLogOut} style={{ opacity: isLogout ? '1' : '0' }} onClick={this.handleLogoutClick}>
                             {"登出"}
                         </div>
@@ -208,7 +218,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
                 </div>
                 <div className={style.BottomCon}>
-                    <div className={style.LeftBlock}>
+                    {!isSignUp && <div className={style.LeftBlock}>
                         <div key={"tag" + 0} className={tagSelect === 0 ? style.LeftCol_Select : style.LeftCol} id={"-1"}
                             onClick={() => { this.setTagSelect(0) }} onMouseOver={this.handleFuncClick} onMouseOut={this.handleFuncClick}>
                             {"主頁"}
@@ -222,9 +232,9 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                             )
                         }
 
-                    </div>
+                    </div>}
 
-                    {tagSelect === 0 && <div className={style.MiddleBlock}>{
+                    {(!isSignUp && tagSelect === 0) && <div className={style.MiddleBlock}>{
                         funcName.map((key, index) =>
                             <div key={"title_tag" + (index + 1)} className={style.funcBlock}
                             >
@@ -241,7 +251,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     </div>
                     }
 
-                    {tagSelect === 0 && <div className={style.RightBlock}>
+                    {(!isSignUp && tagSelect === 0) && <div className={style.RightBlock}>
                         {<Calendar setCheckIn={this.setCheckIn} />}
                         {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} />}
                     </div>}
@@ -254,8 +264,9 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                             )}
                         </div>
                     )}
-                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} />}
+                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} />}
                     {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
+                    {isSignUp && <InfoPage isSignUp={isSignUp} userInfo={userInfo} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                 </div>
             </div>
         );

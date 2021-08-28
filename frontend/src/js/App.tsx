@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Axios from 'axios'
 import '../style/App.css';
 import LoginPage from './LoginPage';
 import MainPage from './MainPage';
@@ -7,6 +8,7 @@ interface AppProps {
 }
 interface AppState {
   isLogin: boolean,
+  isSignUp: boolean,
   userInfo: object,
   allUserInfo: object
 }
@@ -15,14 +17,24 @@ class App extends Component<AppProps, AppState> {
     super(props);
     this.state = {
       isLogin: false,
+      isSignUp: false,
       userInfo: {},
       allUserInfo: []
     }
+  }
+  componentDidMount = () => {
+    this.getUserInfo();
   }
 
   setIsLogin = (isLogin: boolean) => {
     this.setState({
       isLogin: isLogin
+    })
+  }
+
+  setIsSignUp = (flag: boolean) => {
+    this.setState({
+      isSignUp: flag
     })
   }
 
@@ -39,12 +51,20 @@ class App extends Component<AppProps, AppState> {
     })
   }
 
+  getUserInfo = () => {
+    Axios.get("http://localhost:3002/api/get").then((data: any) => {
+      this.setState({
+        allUserInfo: data.data
+      })
+    });
+  }
+
   render() {
-    const { isLogin, userInfo ,allUserInfo} = this.state
+    const { isLogin, isSignUp, userInfo, allUserInfo } = this.state
     return (
       <div className="App">
-        {!isLogin && <LoginPage setIsLogin={this.setIsLogin} setUserInfo={this.setUserInfo} setAllUserInfo={this.setAllUserInfo} />}
-        {isLogin && <MainPage setIsLogin={this.setIsLogin} userInfo={userInfo} allUserInfo={allUserInfo} />}
+        {(!isLogin && !isSignUp) && <LoginPage setIsLogin={this.setIsLogin} setUserInfo={this.setUserInfo} setIsSignUp={this.setIsSignUp} />}
+        {(isLogin || isSignUp) && <MainPage isSignUp={isSignUp} setIsLogin={this.setIsLogin} setIsSignUp={this.setIsSignUp} userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={this.getUserInfo} />}
       </div>
     );
   }
