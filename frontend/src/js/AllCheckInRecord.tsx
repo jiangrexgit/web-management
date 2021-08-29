@@ -62,26 +62,74 @@ class AllCheckInRecord extends Component<AllCheckInRecordProps, AllCheckInRecord
         let l = checkInRecord.length > 100 ? checkInRecord.length : 100
         let ary = [];
         for (let i = 0; i < l; i++) {
-            ary.push(<tr key={"user_" + i} >
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['id'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['department'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? this.getNameFromId(checkInRecord[i]['id']) : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['year'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['month'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['day'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkin'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkout'] : ""}</td>
-                {/* <td style={{
-                    background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
-                    width: '100px',
-                    display: 'flex',
-                    justifyContent: 'center',
-                    alignItems: 'center'
-                }}>
-                    <img src={deleteIcon} alt="" className={style.iconBtn} />
-                    <img src={managementIcon} alt="" className={style.iconBtn} />
-                </td> */}
-            </tr >)
+            if (userInfo['auth'] === "admin") {
+                ary.push(<tr key={"user_" + i} >
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['id'] : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? this.getNameFromId(checkInRecord[i]['id']) : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['year'] : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['month'] : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['day'] : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkin'] : ""}</td>
+                    <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkout'] : ""}</td>
+                    {/* <td style={{
+                background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
+                width: '100px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center'
+            }}>
+                <img src={deleteIcon} alt="" className={style.iconBtn} />
+                <img src={managementIcon} alt="" className={style.iconBtn} />
+            </td> */}
+                </tr >)
+            } else {
+                if (checkInRecord[i]) {
+                    if (checkInRecord[i]['id'] === userInfo['id']) {
+                        ary.push(<tr key={"user_" + i} >
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['id'] : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? this.getNameFromId(checkInRecord[i]['id']) : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['year'] : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['month'] : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['day'] : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkin'] : ""}</td>
+                            <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{checkInRecord[i] ? checkInRecord[i]['checkout'] : ""}</td>
+                            {/* <td style={{
+                            background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
+                            width: '100px',
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center'
+                        }}>
+                            <img src={deleteIcon} alt="" className={style.iconBtn} />
+                            <img src={managementIcon} alt="" className={style.iconBtn} />
+                        </td> */}
+                        </tr >)
+
+                    }
+                } else {
+                    ary.push(<tr key={"user_" + i} >
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{""}</td>
+                        {/* <td style={{
+                        background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
+                        width: '100px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
+                    }}>
+                        <img src={deleteIcon} alt="" className={style.iconBtn} />
+                        <img src={managementIcon} alt="" className={style.iconBtn} />
+                    </td> */}
+                    </tr >)
+
+                }
+            }
+
         }
 
         return (
@@ -90,13 +138,12 @@ class AllCheckInRecord extends Component<AllCheckInRecordProps, AllCheckInRecord
                     <table className={style.UserTable}>
                         <thead>
                             <tr style={{ background: "#97CBFF", height: "30px" }}>
-                                <th colSpan={8}>出勤紀錄</th>
+                                <th colSpan={7}>出勤紀錄</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td>員工編號</td>
-                                <td>部門</td>
                                 <td>姓名</td>
                                 <td>年</td>
                                 <td>月</td>

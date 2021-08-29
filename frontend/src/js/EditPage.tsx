@@ -1,22 +1,21 @@
 import React, { Component, createRef, useEffect } from 'react';
 import Axios from 'axios'
-import Calendar from './Calendar'
 import style from '../style/InfoPage.module.css';
-import deleteIcon from '../image/trash.png';
-import managementIcon from '../image/gear.png';
+import { userInfo } from 'os';
 
 
-interface InfoPageProps {
-    isSignUp: boolean
+interface EditPageProps {
+    userInfo: any;
     allUserInfo: any;
-    setIsSignUp(flag: boolean): void
+    funcSelect: string
     getUserInfo(): void
+    setTagSelect(tag: number, func?: string): void
 }
-interface InfoPageState {
+interface EditPageState {
     warn: string;
 }
 
-class InfoPage extends Component<InfoPageProps, InfoPageState> {
+class EditPage extends Component<EditPageProps, EditPageState> {
     constructor(props: any) {
         super(props);
 
@@ -55,7 +54,7 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
     }
 
     submitUser = () => {
-        const { allUserInfo } = this.props
+        const { allUserInfo, userInfo } = this.props
         let account: HTMLInputElement = document.getElementById('account') as HTMLInputElement
         let password: HTMLInputElement = document.getElementById('password') as HTMLInputElement
         let passwordCheck: HTMLInputElement = document.getElementById('passwordCheck') as HTMLInputElement
@@ -63,100 +62,76 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
         let mail: HTMLInputElement = document.getElementById('mail') as HTMLInputElement
         let gender: HTMLOptionElement = document.getElementById('gender') as HTMLOptionElement
 
-        let str = ""
-        if (account.value === "") {
-            str += "帳號";
+        let nameTxt = "";
+        let pwTxt = "";
+        let mailTxt = "";
+        if (name.value === "") {
+            nameTxt = userInfo['name'];
+        } else {
+            nameTxt = name.value;
         }
         if (password.value === "") {
-            if (str === "") {
-                str += "密碼";
-            } else {
-                str += ", 密碼";
-            }
-        }
-        if (passwordCheck.value === "") {
-            if (str === "") {
-                str += "確認密碼";
-            } else {
-                str += ", 確認密碼";
-
-            }
-        }
-        if (name.value === "") {
-            if (str === "") {
-                str += "姓名";
-            } else {
-                str += ", 姓名";
-            }
+            pwTxt = userInfo['password'];
+        } else {
+            pwTxt = password.value;
         }
         if (mail.value === "") {
-            if (str === "") {
-                str += "信箱";
-            } else {
-                str += ", 信箱";
-
-            }
-        }
-        if (gender.value === "性別") {
-            if (str === "") {
-                str += "性別";
-            } else {
-                str += ", 性別";
-            }
-        }
-
-        console.warn(allUserInfo.length, gender.value);
-
-        if (str !== "") {
-            str += "未輸入"
-            this.setState({
-                warn: str,
-            })
+            mailTxt = userInfo['mail'];
         } else {
-            this.setState({
-                warn: "",
-            })
-            console.warn(allUserInfo.length, gender.value, allUserInfo[allUserInfo.length - 1]['id']);
-            let str = allUserInfo[allUserInfo.length - 1]['id'] + 1;
-
-            Axios.post('http://localhost:3002/api/adduser', {
-                id: str,
-                account: account.value,
-                password: password.value,
-                name: name.value,
-                mail: mail.value,
-                gender: gender.value
-            }).then((data) => { this.props.getUserInfo(); this.props.setIsSignUp(false) })
-
+            mailTxt = mail.value;
         }
-        for (let i = 0; i < allUserInfo.length; i++) {
-            if (account.value === allUserInfo[i]['account']) {
+
+        if (password.value !== "" && passwordCheck.value !== "") {
+            if (password.value !== passwordCheck.value) {
                 this.setState({
-                    warn: "帳號重複"
+                    warn: "兩次密碼輸入不同"
+                })
+            } else {
+                this.setState({
+                    warn: ""
                 })
             }
+        }
+
+        if (password.value === passwordCheck.value) {
+            console.warn(pwTxt, nameTxt, mailTxt, password.value, name.value, mail.value, userInfo['password'], userInfo['name'], userInfo['mail']);
+            Axios.post('http://localhost:3002/api/updateUser', {
+                id: userInfo['id'],
+                password: pwTxt,
+                name: nameTxt,
+                mail: mailTxt
+            }).then((data) => {
+                this.props.getUserInfo();
+                this.props.setTagSelect(1, "員工資料");
+            })
         }
     }
 
     render() {
-        const { isSignUp, allUserInfo, setIsSignUp, } = this.props
+        const { userInfo, allUserInfo, funcSelect, setTagSelect } = this.props
         const { warn } = this.state
+        let date = new Date(userInfo['startworking'])
         return (
             <div className={style.FullPage}>
                 <div className={style.UserInfo}>
                     <table className={style.UserTable}>
                         <thead>
                             <tr style={{ background: "#97CBFF", height: "30px" }}>
-                                <th colSpan={2}>{"註冊會員"}</th>
+                                <th colSpan={2}>{"編輯資料"}</th>
                             </tr>
                         </thead>
                         <tbody>
+                            {funcSelect == "帳號管理" && <tr>
+                                <td>員工編號</td>
+                                <td>
+                                    {userInfo['id']}
+                                </td>
+                            </tr>}
                             <tr>
                                 <td>帳號</td>
                                 <td>
-                                    {<form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"account"} placeholder="Account" />
-                                    </form>
+                                    {
+                                        userInfo['account']
                                     }
                                 </td>
                             </tr>
@@ -180,7 +155,7 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                                 <td>姓名</td>
                                 <td>
                                     <form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"name"} placeholder={"Name"} />
+                                        <input className={style.Input} id={"name"} placeholder={funcSelect == "帳號管理" ? userInfo['name'] : "Name"} />
                                     </form>
                                 </td>
                             </tr>
@@ -188,7 +163,7 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                                 <td>信箱</td>
                                 <td>
                                     <form onSubmit={this.onChange}>
-                                        <input className={style.Input} id={"mail"} placeholder={"Email"} />
+                                        <input className={style.Input} id={"mail"} placeholder={funcSelect == "帳號管理" ? userInfo['mail'] : "Email"} />
                                     </form>
                                 </td>
                             </tr>
@@ -196,20 +171,25 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
                                 <td>性別</td>
                                 <td>
                                     {
-                                        <select id={"gender"}>
-                                            <option>性別</option>
-                                            <option value="Male">男</option>
-                                            <option value="Feale">女</option>
-                                        </select>
+                                        userInfo['gender']
                                     }
                                 </td>
                             </tr>
+                            {<tr>
+                                <td>到職日</td>
+                                <td>
+                                    {
+
+                                        date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+                                    }
+                                </td>
+                            </tr>}
                         </tbody>
                     </table>
                     <div className={style.WarningText}>{warn}</div>
                     <div className={style.BtnCon}>
                         <div className={style.commitBtn} onClick={this.submitUser}><div className={style.checkIcon}></div></div>
-                        <div className={style.cancelBtn} onClick={() => { setIsSignUp(false) }}><div className={style.cancelIcon}></div></div>
+                        <div className={style.cancelBtn} onClick={() => { setTagSelect(1, "員工資料") }}><div className={style.cancelIcon}></div></div>
                     </div>
                 </div>
             </div >
@@ -217,4 +197,4 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
     }
 }
 
-export default InfoPage;
+export default EditPage;

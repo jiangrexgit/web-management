@@ -10,6 +10,10 @@ import CheckInRecord from './CheckInRecord';
 import UserPage from './UserPage';
 import AllCheckInRecord from './AllCheckInRecord';
 import InfoPage from './InfoPage'
+import EditPage from './EditPage';
+import VacationRecord from './VacationRecord';
+import DayOffPage from './DayOffPage';
+import RosterPage from './RosterPage';
 
 
 interface MainPageProps {
@@ -26,8 +30,10 @@ interface MainPageState {
     funcSelect: string;
     isLogout: boolean;
     checkInRecord: Array<any>;
+    vacationRecord: Array<any>;
     checkObj: object;
     funcOver: number;
+    editUserInfo: any;
 }
 
 class MainPage extends Component<MainPageProps, MainPageState> {
@@ -41,17 +47,20 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             funcSelect: '',
             isLogout: false,
             checkInRecord: [],
+            vacationRecord: [],
             checkObj: {
                 check: 'not',
                 time: ''
             },
-            funcOver: -1
+            funcOver: -1,
+            editUserInfo: {}
         }
     }
 
     componentDidMount = () => {
         setInterval(this.ShowTime, 1000);
         this.getCheckInRecord()
+        this.getVacationRecord();
     }
 
     componentWillUnmount = () => {
@@ -70,7 +79,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
         })
     }
 
-    setTagSelect = (index: number, func?: string) => {
+    setTagSelect = (index: number, func?: string, id?: any) => {
         this.setState({
             tagSelect: index
         })
@@ -78,6 +87,13 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             this.setState({
                 funcSelect: func
             })
+            if (func === "帳號管理") {
+                if (id) {
+                    this.setEditUserInfo(id)
+                } else {
+                    this.setEditUserInfo(this.props.userInfo['id'])
+                }
+            }
         }
     }
 
@@ -87,6 +103,25 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                 checkInRecord: data.data
             })
         })
+    }
+
+    getVacationRecord = () => {
+        Axios.get("http://localhost:3002/api/getVacation").then((data) => {
+            this.setState({
+                vacationRecord: data.data
+            })
+        })
+    }
+
+    setEditUserInfo = (id: any) => {
+        const { allUserInfo } = this.props;
+        for (let i = 0; i < allUserInfo.length; i++) {
+            if (allUserInfo[i]['id'] === id) {
+                this.setState({
+                    editUserInfo: allUserInfo[i]
+                })
+            }
+        }
     }
 
     setCheckIn = (isCheckIn: string, time: string) => {
@@ -129,7 +164,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                 Axios.post('http://localhost:3002/api/checkin', {
                     id: userInfo['id'],
                     account: userInfo['account'],
-                    department: userInfo['department'],
                     year: date.getFullYear(),
                     month: date.getMonth() + 1,
                     day: date.getDate(),
@@ -139,7 +173,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                 Axios.post('http://localhost:3002/api/checkout', {
                     id: userInfo['id'],
                     account: userInfo['account'],
-                    department: userInfo['department'],
                     year: date.getFullYear(),
                     month: date.getMonth() + 1,
                     day: date.getDate(),
@@ -194,11 +227,14 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
     render() {
         const { isSignUp, userInfo, allUserInfo, getUserInfo, setIsSignUp } = this.props
-        const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
+        const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver, editUserInfo, vacationRecord } = this.state
         const funcName = [
             { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
-            { i: 2, name: "薪資管理", func: ["薪資計算", "加班費計算"], icon: SalaryIcon },
+            { i: 2, name: "薪資管理", func: ["薪資試算"], icon: SalaryIcon },
             { i: 3, name: "出勤系統", func: ["排班", "請假單", "請假紀錄", "出勤紀錄"], icon: CalendarIcon }]
+
+        if (userInfo['auth'] === 'admin') funcName[1]['func'] = ["薪資試算", "修改薪資", "薪資報表"];
+
         return (
             <div className={style.FullPage}>
                 <div className={style.TitleBar}>
@@ -251,7 +287,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
                     {(!isSignUp && tagSelect === 0) && <div className={style.RightBlock}>
                         {<Calendar setCheckIn={this.setCheckIn} />}
-                        {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} />}
+                        {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} userInfo={userInfo} />}
                     </div>}
                     {funcName.map((key, index) =>
                         <div key={'FuncList' + (index + 1)} className={style.FuncList} id={String(index)}
@@ -262,9 +298,13 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                             )}
                         </div>
                     )}
-                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} />}
+                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setEditUserInfo={this.setEditUserInfo} setTagSelect={this.setTagSelect} />}
+                    {(tagSelect === 3 && funcSelect === "排班") && <RosterPage userInfo={userInfo} checkInRecord={checkInRecord} />}
                     {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
-                    {(isSignUp || funcSelect === "帳號管理") && <InfoPage isSignUp={isSignUp} funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
+                    {(tagSelect === 3 && funcSelect === "請假單") && <DayOffPage funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} getVacationRecord={this.getVacationRecord} setTagSelect={this.setTagSelect} />}
+                    {(tagSelect === 3 && funcSelect === "請假紀錄") && <VacationRecord userInfo={userInfo} allUserInfo={allUserInfo} vacationRecord={vacationRecord} />}
+                    {(tagSelect === 1 && funcSelect === "帳號管理") && <EditPage funcSelect={funcSelect} userInfo={editUserInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setTagSelect={this.setTagSelect}></EditPage>}
+                    {(isSignUp) && <InfoPage isSignUp={isSignUp} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                 </div>
             </div>
         );

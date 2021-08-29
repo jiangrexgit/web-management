@@ -10,6 +10,8 @@ interface UserPageProps {
     userInfo: any;
     allUserInfo: any;
     getUserInfo(): void
+    setEditUserInfo(id: any): void
+    setTagSelect(tag: number, func?: string, id?: any): void
 }
 interface UserPageState {
     time: string;
@@ -46,12 +48,19 @@ class UserPage extends Component<UserPageProps, UserPageState> {
     }
 
     deleteUser = (id: string) => {
-        Axios.post(`http://localhost:3002/api/delete/${id}`).then((data) => { this.props.getUserInfo() })
+        Axios.post(`http://localhost:3002/api/delete/${id}`).then((data) => {
+            this.props.getUserInfo()
+        })
+    }
+
+    formateDate(date: any): string {
+        let temp = new Date(date);
+        return temp.getFullYear() + "-" + (temp.getMonth() + 1) + "-" + temp.getDate()
     }
 
 
     render() {
-        const { userInfo, allUserInfo } = this.props
+        const { userInfo, allUserInfo, setEditUserInfo, setTagSelect } = this.props
         const { time, tagSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
         console.warn(allUserInfo);
         let l = allUserInfo.length > 100 ? allUserInfo.length : 100
@@ -59,19 +68,19 @@ class UserPage extends Component<UserPageProps, UserPageState> {
         for (let i = 0; i < l; i++) {
             ary.push(<tr key={"user_" + i} >
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['id'] : ""}</td>
-                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['department'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['name'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['mail'] : ""}</td>
-                <td style={{
+                <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? this.formateDate(allUserInfo[i]['startworking']) : ""}</td>
+                {<td style={{
                     background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
                     width: '100px',
                     display: 'flex',
                     justifyContent: 'center',
                     alignItems: 'center'
                 }}>
-                    <img src={deleteIcon} alt="" className={style.iconBtn} onClick={() => { this.deleteUser(allUserInfo[i]['id']) }} />
-                    <img src={managementIcon} alt="" className={style.iconBtn} />
-                </td>
+                    {allUserInfo[i] && <img src={deleteIcon} alt="" className={style.iconBtn} onClick={() => { this.deleteUser(allUserInfo[i]['id']) }} />}
+                    {allUserInfo[i] && <img src={managementIcon} alt="" className={style.iconBtn} onClick={() => { setTagSelect(1, "帳號管理", allUserInfo[i]['id']) }} />}
+                </td>}
             </tr >)
         }
 
@@ -87,9 +96,9 @@ class UserPage extends Component<UserPageProps, UserPageState> {
                         <tbody>
                             <tr>
                                 <td>員工編號</td>
-                                <td>部門</td>
                                 <td>姓名</td>
                                 <td>聯絡信箱</td>
+                                <td>到職日</td>
                                 {userInfo['auth'] === 'admin' && <td style={{ width: '100px' }}>功能</td>}
                             </tr>
                         </tbody>

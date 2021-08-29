@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
-import style from '../style/CheckInRecord.module.css';
+import style from '../style/UserPage.module.css';
 
-interface CheckInRecordProps {
-    checkObj: any
+interface RosterPageProps {
     checkInRecord: any
     userInfo: any
 }
-interface CheckInRecordState {
+interface RosterPageState {
     year: any;
     month: any;
     day: any
 }
 
-class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
+class RosterPage extends Component<RosterPageProps, RosterPageState> {
     constructor(props: any) {
         super(props);
 
@@ -77,48 +76,56 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
         return fmt;
     }
 
+    getMonthDays = () => {
+        //根据月份获取当前天数
+        var year = this.state.year,
+            month = this.state.month;
+        var temp = new Date(year, month, 0);
+        return temp.getDate();
+    }
+    getFirstDayWeek = () => {
+        //根据年月返回当月1号是星期几
+        var year = this.state.year,
+            month = this.state.month;
+
+        var dt = new Date(year + '/' + month + '/1');//new Date(year,month,1);
+        var Weekdays = dt.getDay();
+
+        return Weekdays;
+    }
 
     render() {
         const { userInfo, checkInRecord } = this.props
         const { month, year, day } = this.state
-        var arry1 = []
-        for (let i = 6; i >= 0; i--) {
-            let dayBefore = new Date().getTime() - 24 * 60 * 60 * i * 1000;
-            arry1[i] = (new Date(dayBefore).getMonth() + 1) + '/' + new Date(dayBefore).getDate();
+
+        let getDays = this.getMonthDays()
+
+        let arry1 = []
+        for (let i = 0; i < getDays; i++) {
+            arry1[i] = i + 1;
         }
-
-        let obj: any = {}
-        let l = checkInRecord.length > 6 ? 6 : checkInRecord.length
-        for (let j = l - 1; j >= 0; j--) {
-            if (checkInRecord[j]['id'] === userInfo['id']) {
-                let key = checkInRecord[j]['month'] + "/" + checkInRecord[j]['day'];
-                obj[key] = { checkin: checkInRecord[j]['checkin'], checkout: checkInRecord[j]['checkout'] };
-            }
-        }
-
-        var node1 = arry1.map(function (item) {
-            return <div className={style.TextCol} key={"CheckIn_" + item}>
-                <div className={style.DateText}>{item}</div>
-                <div className={style.RecordText}>{obj[item] ? obj[item]['checkin'] : ""}</div>
-                <div className={style.RecordText}>{obj[item] ? obj[item]['checkout'] : ""}</div>
-            </div>
-
-        })
+        let node1 = arry1.map(function (item) { return <td style={{width:'3%'}}>{item}</td> })
+        console.warn(node1);
+        
         return (
-            <div className={style.CheckInRecordBorder}>
-                <div className={style.HeaderBorder}>
-                    打卡紀錄
+            <div className={style.FullPage}>
+                <div className={style.UserInfo}>
+                    <table className={style.UserTable}>
+                        <thead>
+                            <tr style={{ background: "#97CBFF", height: "30px" }}>
+                                <th colSpan={getDays}>出勤紀錄</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                {node1}
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div className={style.TextCon}>
-                    <div className={style.TitleCol} style={{}}>
-                        <div className={style.TitleText} style={{}}>{"簽到"}</div>
-                        <div className={style.TitleText} style={{}}>{"簽退"}</div>
-                    </div>
-                    {node1}
-                </div>
-            </div>
+            </div >
         );
     }
 }
 
-export default CheckInRecord;
+export default RosterPage;

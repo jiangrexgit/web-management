@@ -65,10 +65,10 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
 
     checkAccount = (data: Array<any>) => {
 
-        this.setState({
-            accountText: 'admin',
-            passwordText: 'admin',
-        })
+        // this.setState({
+        //     accountText: 'admin',
+        //     passwordText: 'admin',
+        // })
         const { accountText, passwordText } = this.state;
         const { setIsLogin, setUserInfo } = this.props;
         console.log(accountText, passwordText)
@@ -79,14 +79,11 @@ class LoginPage extends Component<LoginPageProps, LoginPageState> {
                 setIsLogin(true);
                 setUserInfo(data[i]);
             } else {
-                // if (accountText === "" || passwordText === "") {
-                //     this.setState({
-                //         isWarning: true
-                //     })
-                //     if (this.accountInput.current) this.accountInput.current.value = '';
-                //     if (this.passwordInput.current) this.passwordInput.current.value = '';
-                // }
-
+                this.setState({
+                    isWarning: true
+                })
+                if (this.accountInput.current) this.accountInput.current.value = '';
+                if (this.passwordInput.current) this.passwordInput.current.value = '';
             }
         }
     }
