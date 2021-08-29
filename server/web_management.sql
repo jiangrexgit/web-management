@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- 主機： 127.0.0.1
--- 產生時間： 2021-08-28 11:54:05
+-- 產生時間： 2021-08-29 18:39:20
 -- 伺服器版本： 10.4.20-MariaDB
 -- PHP 版本： 7.3.29
 
@@ -28,9 +28,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `checkin_record` (
-  `id` text NOT NULL,
+  `id` int(10) NOT NULL,
   `account` text NOT NULL,
-  `department` text NOT NULL,
   `year` text NOT NULL,
   `month` text NOT NULL,
   `day` text NOT NULL,
@@ -42,11 +41,13 @@ CREATE TABLE `checkin_record` (
 -- 傾印資料表的資料 `checkin_record`
 --
 
-INSERT INTO `checkin_record` (`id`, `account`, `department`, `year`, `month`, `day`, `checkin`, `checkout`) VALUES
-('00000000', 'admin', 'all', '2021', '8', '22', '17:38', '18:53'),
-('00000000', 'admin', 'all', '2021', '8', '25', '22:03', '22:56'),
-('00000000', 'admin', 'all', '2021', '8', '26', '23:22', ''),
-('00000000', 'admin', 'all', '2021', '8', '28', '17:52', '17:52');
+INSERT INTO `checkin_record` (`id`, `account`, `year`, `month`, `day`, `checkin`, `checkout`) VALUES
+(0, 'admin', '2021', '8', '22', '17:38', '18:53'),
+(0, 'admin', '2021', '8', '25', '22:03', '22:56'),
+(0, 'admin', '2021', '8', '26', '23:22', ''),
+(0, 'admin', '2021', '8', '28', '17:52', '17:52'),
+(0, 'admin', '2021', '8', '29', '13:04', '23:30'),
+(1, 'aa', '2021', '8', '29', '15:27', '15:27');
 
 -- --------------------------------------------------------
 
@@ -55,14 +56,13 @@ INSERT INTO `checkin_record` (`id`, `account`, `department`, `year`, `month`, `d
 --
 
 CREATE TABLE `user_infos` (
-  `id` text NOT NULL,
+  `id` int(10) NOT NULL,
   `account` text NOT NULL,
   `password` text NOT NULL,
   `name` text NOT NULL,
   `auth` text NOT NULL DEFAULT 'staff',
   `mail` longtext NOT NULL,
   `gender` text NOT NULL,
-  `department` text NOT NULL,
   `startworking` date NOT NULL DEFAULT current_timestamp(),
   `vacation` float NOT NULL DEFAULT 0,
   `salary` float NOT NULL DEFAULT 0
@@ -72,8 +72,31 @@ CREATE TABLE `user_infos` (
 -- 傾印資料表的資料 `user_infos`
 --
 
-INSERT INTO `user_infos` (`id`, `account`, `password`, `name`, `auth`, `mail`, `gender`, `department`, `startworking`, `vacation`, `salary`) VALUES
-('00000000', 'admin', 'admin', '管理者', 'admin', '', '', 'all', '2020-01-01', 0, 0);
+INSERT INTO `user_infos` (`id`, `account`, `password`, `name`, `auth`, `mail`, `gender`, `startworking`, `vacation`, `salary`) VALUES
+(0, 'admin', 'admin', '管理者', 'admin', '', '', '2020-01-01', 0, 0),
+(1, 'aa', 'AAA', 'AA', 'staff', 'dd', 'Male', '2021-08-29', 0, 0);
+
+-- --------------------------------------------------------
+
+--
+-- 資料表結構 `vacation_record`
+--
+
+CREATE TABLE `vacation_record` (
+  `id` int(10) NOT NULL,
+  `name` text NOT NULL,
+  `start` datetime NOT NULL,
+  `end` datetime NOT NULL,
+  `status` text NOT NULL DEFAULT 'false'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- 傾印資料表的資料 `vacation_record`
+--
+
+INSERT INTO `vacation_record` (`id`, `name`, `start`, `end`, `status`) VALUES
+(0, '管理者', '2021-09-30 00:00:00', '2021-09-30 00:00:00', 'false'),
+(0, '管理者', '2021-08-30 00:00:00', '2021-08-30 00:00:00', 'false');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
