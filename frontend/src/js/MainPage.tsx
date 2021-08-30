@@ -233,7 +233,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             { i: 2, name: "薪資管理", func: ["薪資試算"], icon: SalaryIcon },
             { i: 3, name: "出勤系統", func: ["排班", "請假單", "請假紀錄", "出勤紀錄"], icon: CalendarIcon }]
 
-        if (userInfo['auth'] === 'admin') funcName[1]['func'] = ["薪資試算", "修改薪資", "薪資報表"];
+        if (userInfo['auth'] === 'admin') funcName[1]['func'] = ["薪資試算", "薪資報表"];
 
         return (
             <div className={style.FullPage}>
@@ -289,6 +289,13 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                         {<Calendar setCheckIn={this.setCheckIn} />}
                         {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} userInfo={userInfo} />}
                     </div>}
+                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setEditUserInfo={this.setEditUserInfo} setTagSelect={this.setTagSelect} />}
+                    {(tagSelect === 3 && funcSelect === "排班") && <RosterPage allUserInfo={allUserInfo} userInfo={userInfo} checkInRecord={checkInRecord} />}
+                    {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
+                    {(tagSelect === 3 && funcSelect === "請假單") && <DayOffPage funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} getVacationRecord={this.getVacationRecord} setTagSelect={this.setTagSelect} />}
+                    {(tagSelect === 3 && funcSelect === "請假紀錄") && <VacationRecord userInfo={userInfo} allUserInfo={allUserInfo} vacationRecord={vacationRecord} />}
+                    {(tagSelect === 1 && funcSelect === "帳號管理") && <EditPage funcSelect={funcSelect} userInfo={editUserInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setTagSelect={this.setTagSelect}></EditPage>}
+                    {(isSignUp) && <InfoPage isSignUp={isSignUp} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                     {funcName.map((key, index) =>
                         <div key={'FuncList' + (index + 1)} className={style.FuncList} id={String(index)}
                             style={{ top: 50 * (index + 1) + "px", display: (funcOver === index && funcOver !== -1) ? 'flex' : 'none' }}
@@ -298,13 +305,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                             )}
                         </div>
                     )}
-                    {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setEditUserInfo={this.setEditUserInfo} setTagSelect={this.setTagSelect} />}
-                    {(tagSelect === 3 && funcSelect === "排班") && <RosterPage userInfo={userInfo} checkInRecord={checkInRecord} />}
-                    {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
-                    {(tagSelect === 3 && funcSelect === "請假單") && <DayOffPage funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} getVacationRecord={this.getVacationRecord} setTagSelect={this.setTagSelect} />}
-                    {(tagSelect === 3 && funcSelect === "請假紀錄") && <VacationRecord userInfo={userInfo} allUserInfo={allUserInfo} vacationRecord={vacationRecord} />}
-                    {(tagSelect === 1 && funcSelect === "帳號管理") && <EditPage funcSelect={funcSelect} userInfo={editUserInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setTagSelect={this.setTagSelect}></EditPage>}
-                    {(isSignUp) && <InfoPage isSignUp={isSignUp} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                 </div>
             </div>
         );

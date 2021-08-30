@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import style from '../style/UserPage.module.css';
+import styleCal from '../style/Calendar.module.css';
 
 interface RosterPageProps {
     checkInRecord: any
     userInfo: any
+    allUserInfo: any
 }
 interface RosterPageState {
     year: any;
     month: any;
-    day: any
+    day: any;
+    rosterRecord: any
 }
 
 class RosterPage extends Component<RosterPageProps, RosterPageState> {
@@ -19,8 +22,25 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
         this.state = {
             year: this.formatDate(date, 'yyyy'),
             month: parseInt(this.formatDate(date, 'MM')),
-            day: parseInt(this.formatDate(date, 'dd'))
+            day: parseInt(this.formatDate(date, 'dd')),
+            rosterRecord: {}
         }
+    }
+
+    componentDidMount = () => {
+        const { allUserInfo, checkInRecord } = this.props
+        const { month, year, day, rosterRecord } = this.state
+
+        let tmpRoster = rosterRecord;
+        for (let i = 0; i < allUserInfo.length; i++) {
+            let tmp = { day: {}, night: {} };
+            tmpRoster[allUserInfo[i]['name']] = tmp;
+        }
+        console.warn(tmpRoster);
+
+        this.setState({
+            rosterRecord: tmpRoster
+        })
     }
 
     formatDate = (date?: any, fmt?: any, flag?: any) => {
@@ -94,32 +114,124 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
         return Weekdays;
     }
 
+    handleLeftClick = () => {
+        if (this.state.month - 1 < 1) {
+
+            this.setState({
+                year: this.state.year - 1,
+                month: 12
+            })
+        } else {
+            this.setState({
+                month: this.state.month - 1
+            })
+
+        }
+
+    }
+
+    handleRightClick = () => {
+        if (this.state.month + 1 > 12) {
+
+            this.setState({
+                year: this.state.year + 1,
+                month: 1
+            })
+        } else {
+            this.setState({
+                month: this.state.month + 1
+            })
+        }
+    }
+
+    handelClick = (name: any, index: any, type: any) => {
+        console.warn(name, index, type);
+        const { month, year, day, rosterRecord } = this.state
+        let tmp = rosterRecord;
+        if (tmp[name][type][index]) {
+            tmp[name][type][index] = false;
+        } else {
+            tmp[name][type][index] = true;
+
+        }
+
+        this.setState({
+            rosterRecord: tmp
+        })
+
+        console.warn(tmp);
+
+    }
+
     render() {
-        const { userInfo, checkInRecord } = this.props
-        const { month, year, day } = this.state
+        const { allUserInfo, checkInRecord } = this.props
+        const { month, year, day, rosterRecord } = this.state
 
         let getDays = this.getMonthDays()
 
-        let arry1 = []
+        let arry1: number[] = [];
         for (let i = 0; i < getDays; i++) {
             arry1[i] = i + 1;
         }
-        let node1 = arry1.map(function (item) { return <td style={{width:'3%'}}>{item}</td> })
-        console.warn(node1);
-        
+
+        let node1 = arry1.map((item) =>
+            <td className={style.DateCol} key={"item_" + item}>{item}</td>
+        )
+        let node2 = allUserInfo.map((item: any) =>
+            <tr key={"day_" + item['name']}>
+                <td className={style.NameCol}>{item['name']}</td>
+                {arry1.map((item_1) =>
+                    <td className={style.DateCol} style={{ background: (rosterRecord[item['name']] && rosterRecord[item['name']]['day'][item_1]) ? '#BBFFBB' : "#FFFFFF" }} key={"day_" + item['name'] + item_1} onClick={() => { this.handelClick(item['name'], item_1, "day") }}>{ }</td>
+
+                )}
+            </tr>
+        )
+        let node3 = allUserInfo.map((item: any) =>
+            <tr key={"night_" + item['name']} >
+                <td className={style.NameCol}>{item['name']}</td>
+                {arry1.map((item_1) =>
+                    <td className={style.DateCol} style={{ background: (rosterRecord[item['name']] && rosterRecord[item['name']]['night'][item_1]) ? '#BBFFBB' : "#FFFFFF" }} key={"night_" + item['name'] + item_1} onClick={() => { this.handelClick(item['name'], item_1, "night") }}>{ }</td>
+
+                )}
+            </tr>
+        )
+
+
         return (
             <div className={style.FullPage}>
                 <div className={style.UserInfo}>
                     <table className={style.UserTable}>
                         <thead>
                             <tr style={{ background: "#97CBFF", height: "30px" }}>
-                                <th colSpan={getDays}>出勤紀錄</th>
+                                <th colSpan={getDays + 1}>排班</th>
+                            </tr>
+                            <tr style={{ background: "#97CBFF", height: "30px", position: 'relative' }}>
+                                <th colSpan={getDays + 1}>
+                                    <div className={style.TriangleLeft} onClick={this.handleLeftClick}></div>
+                                    {year + "年 / " + (month) + "月"}
+                                    <div className={style.TriangleRight} onClick={this.handleRightClick}></div>
+                                </th>
                             </tr>
                         </thead>
                         <tbody>
+                            <tr style={{ background: "#FFF4C1", height: "30px" }}>
+                                <th colSpan={getDays + 1}>{'早班(08:00-16:00)'}</th>
+                            </tr>
                             <tr>
+                                <td className={style.NameCol}>姓名</td>
                                 {node1}
                             </tr>
+                            {node2}
+                        </tbody>
+                        <tbody>
+                            <tr style={{ background: "#FFF4C1", height: "30px" }}>
+                                <th colSpan={getDays + 1}>{'晚班(16:00-22:00)'}</th>
+                            </tr>
+                            <tr>
+                                <td className={style.NameCol}>姓名</td>
+                                {node1}
+                            </tr>
+                            {node3}
                         </tbody>
                     </table>
                 </div>

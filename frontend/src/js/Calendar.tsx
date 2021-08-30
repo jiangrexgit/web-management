@@ -97,6 +97,36 @@ class Calendar extends Component<CalendarProps, CalendarState> {
         return Weekdays;
     }
 
+    handleLeftClick = () => {
+        if (this.state.month - 1 < 1) {
+
+            this.setState({
+                year: this.state.year - 1,
+                month: 12
+            })
+        } else {
+            this.setState({
+                month: this.state.month - 1
+            })
+
+        }
+
+    }
+
+    handleRightClick = () => {
+        if (this.state.month + 1 > 12) {
+
+            this.setState({
+                year: this.state.year + 1,
+                month: 1
+            })
+        } else {
+            this.setState({
+                month: this.state.month + 1
+            })
+        }
+    }
+
     handleClick = (e: any) => {
         let date = new Date();
         let timeStr = date.getHours() + ":";
@@ -132,8 +162,8 @@ class Calendar extends Component<CalendarProps, CalendarState> {
                 <div className={style.HeaderBorder}>
                     <p>{year + "年"}</p>
                     <p>{month + "月"}</p>
-                    <p className={style.TriangleLeft}> </p>
-                    <p className={style.TriangleRight}> </p>
+                    <p className={style.TriangleLeft} onClick={this.handleLeftClick}> </p>
+                    <p className={style.TriangleRight} onClick={this.handleRightClick}> </p>
                 </div>
                 <div>
                     <div className={style.Weekdat}>
