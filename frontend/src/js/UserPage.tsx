@@ -62,7 +62,6 @@ class UserPage extends Component<UserPageProps, UserPageState> {
     render() {
         const { userInfo, allUserInfo, setEditUserInfo, setTagSelect } = this.props
         const { time, tagSelect, isLogout, checkObj, checkInRecord, funcOver } = this.state
-        console.warn(allUserInfo);
         let l = allUserInfo.length > 100 ? allUserInfo.length : 100
         let ary = [];
         for (let i = 0; i < l; i++) {
@@ -71,7 +70,7 @@ class UserPage extends Component<UserPageProps, UserPageState> {
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['name'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? allUserInfo[i]['mail'] : ""}</td>
                 <td style={{ background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF" }}>{allUserInfo[i] ? this.formateDate(allUserInfo[i]['startworking']) : ""}</td>
-                {<td style={{
+                {userInfo['auth'] === 'admin' && <td style={{
                     background: i % 2 === 0 ? "#f2f2f2" : "#FFFFFF",
                     width: '100px',
                     display: 'flex',

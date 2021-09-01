@@ -63,7 +63,6 @@ class VacationRecord extends Component<VacationRecordProps, VacationRecordState>
     render() {
         const { userInfo, vacationRecord } = this.props
         const { time, tagSelect, isLogout, checkObj, funcOver } = this.state
-        console.warn(vacationRecord);
         let l = vacationRecord.length > 100 ? vacationRecord.length : 100
         let ary = [];
         for (let i = 0; i < l; i++) {

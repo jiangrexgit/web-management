@@ -87,13 +87,17 @@ class CheckInRecord extends Component<CheckInRecordProps, CheckInRecordState> {
             arry1[i] = (new Date(dayBefore).getMonth() + 1) + '/' + new Date(dayBefore).getDate();
         }
 
-        let obj: any = {}
-        let l = checkInRecord.length > 6 ? 6 : checkInRecord.length
-        for (let j = l - 1; j >= 0; j--) {
-            if (checkInRecord[j]['id'] === userInfo['id']) {
-                let key = checkInRecord[j]['month'] + "/" + checkInRecord[j]['day'];
-                obj[key] = { checkin: checkInRecord[j]['checkin'], checkout: checkInRecord[j]['checkout'] };
+        let tmp = []
+        for (let i = checkInRecord.length - 1; i >= 0; i--) {
+            if (checkInRecord[i]['id'] === userInfo['id']) {
+                tmp.push(checkInRecord[i])
             }
+        }
+
+        let obj: any = {}
+        for (let j = 0; j < tmp.length; j++) {
+            let key = tmp[j]['month'] + "/" + tmp[j]['day'];
+            obj[key] = { checkin: tmp[j]['checkin'], checkout: tmp[j]['checkout'] };
         }
 
         var node1 = arry1.map(function (item) {

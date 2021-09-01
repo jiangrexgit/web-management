@@ -105,7 +105,6 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
             }
         }
 
-        console.warn(allUserInfo.length, gender.value);
 
         if (str !== "") {
             str += "未輸入"
@@ -116,7 +115,6 @@ class InfoPage extends Component<InfoPageProps, InfoPageState> {
             this.setState({
                 warn: "",
             })
-            console.warn(allUserInfo.length, gender.value, allUserInfo[allUserInfo.length - 1]['id']);
             let str = allUserInfo[allUserInfo.length - 1]['id'] + 1;
 
             Axios.post('http://localhost:3002/api/adduser', {

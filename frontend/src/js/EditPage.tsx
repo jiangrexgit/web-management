@@ -10,6 +10,7 @@ interface EditPageProps {
     funcSelect: string
     getUserInfo(): void
     setTagSelect(tag: number, func?: string): void
+    auth: string
 }
 interface EditPageState {
     warn: string;
@@ -55,16 +56,18 @@ class EditPage extends Component<EditPageProps, EditPageState> {
 
     submitUser = () => {
         const { allUserInfo, userInfo } = this.props
-        let account: HTMLInputElement = document.getElementById('account') as HTMLInputElement
         let password: HTMLInputElement = document.getElementById('password') as HTMLInputElement
         let passwordCheck: HTMLInputElement = document.getElementById('passwordCheck') as HTMLInputElement
         let name: HTMLInputElement = document.getElementById('name') as HTMLInputElement
         let mail: HTMLInputElement = document.getElementById('mail') as HTMLInputElement
-        let gender: HTMLOptionElement = document.getElementById('gender') as HTMLOptionElement
+        let salary: HTMLInputElement = document.getElementById('salary') as HTMLInputElement
+        let auth: HTMLOptionElement = document.getElementById('auth') as HTMLOptionElement
 
         let nameTxt = "";
         let pwTxt = "";
         let mailTxt = "";
+        let salaryTxt = "";
+        let authTxt = "";
         if (name.value === "") {
             nameTxt = userInfo['name'];
         } else {
@@ -81,6 +84,20 @@ class EditPage extends Component<EditPageProps, EditPageState> {
             mailTxt = mail.value;
         }
 
+        if (salary) {
+            if (salary.value === "") {
+                salaryTxt = userInfo['salary'];
+            } else {
+                salaryTxt = salary.value;
+            }
+        } else {
+            salaryTxt = userInfo['salary'];
+        }
+        if (auth.value === "權限") {
+            authTxt = userInfo['auth'];
+        } else {
+            authTxt = auth.value;
+        }
         if (password.value !== "" && passwordCheck.value !== "") {
             if (password.value !== passwordCheck.value) {
                 this.setState({
@@ -94,12 +111,13 @@ class EditPage extends Component<EditPageProps, EditPageState> {
         }
 
         if (password.value === passwordCheck.value) {
-            console.warn(pwTxt, nameTxt, mailTxt, password.value, name.value, mail.value, userInfo['password'], userInfo['name'], userInfo['mail']);
             Axios.post('http://localhost:3002/api/updateUser', {
                 id: userInfo['id'],
                 password: pwTxt,
                 name: nameTxt,
-                mail: mailTxt
+                mail: mailTxt,
+                salary: salaryTxt,
+                auth: authTxt
             }).then((data) => {
                 this.props.getUserInfo();
                 this.props.setTagSelect(1, "員工資料");
@@ -108,7 +126,7 @@ class EditPage extends Component<EditPageProps, EditPageState> {
     }
 
     render() {
-        const { userInfo, allUserInfo, funcSelect, setTagSelect } = this.props
+        const { userInfo, allUserInfo, funcSelect, setTagSelect, auth } = this.props
         const { warn } = this.state
         let date = new Date(userInfo['startworking'])
         return (
@@ -181,6 +199,31 @@ class EditPage extends Component<EditPageProps, EditPageState> {
                                     {
 
                                         date.getFullYear() + "-" + (date.getMonth() + 1) + "-" + date.getDate()
+                                    }
+                                </td>
+                            </tr>}
+                            {<tr>
+                                <td>薪資</td>
+                                <td>
+                                    {
+                                        auth === 'admin' ?
+                                            <form onSubmit={this.onChange}>
+                                                <input className={style.Input} id={"salary"} placeholder={funcSelect == "帳號管理" ? userInfo['salary'] : "Salary"} />
+                                            </form> :
+
+                                            userInfo['salary']
+                                    }
+                                </td>
+                            </tr>}
+                            {auth === 'admin' && <tr>
+                                <td>權限</td>
+                                <td>
+                                    {
+                                        <select id={"auth"}>
+                                            <option>權限</option>
+                                            <option value="admin">管理</option>
+                                            <option value="staff">員工</option>
+                                        </select>
                                     }
                                 </td>
                             </tr>}

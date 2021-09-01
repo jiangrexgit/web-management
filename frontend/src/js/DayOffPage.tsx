@@ -82,7 +82,6 @@ class DayOffPage extends Component<DayOffPageProps, DayOffPageState> {
                 })
 
             } else {
-                console.warn(startDate.value, startHour.value, startMin.value, endDate.value, endHour.value, endMin.value, dateStart.getTime(), dateEnd.getTime());
                 let startSpl = startDate.value.split('-')
                 let startTime = new Date(Date.UTC(Number(startSpl[0]), Number(startSpl[1]) - 1, Number(startSpl[2]), Number(startHour.value), Number(startMin.value)))
                 let endSpl = endDate.value.split('-')

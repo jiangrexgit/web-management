@@ -64,8 +64,10 @@ app.post('/api/updateUser', (req, res) => {
     const password = req.body.password;
     const name = req.body.name;
     const mail = req.body.mail;
+    const salary = req.body.salary;
+    const auth = req.body.auth;
 
-    db.query("UPDATE user_infos SET password = ?,  name = ? , mail = ? WHERE id = ?", [password, name, mail, id], (err, result) => {
+    db.query("UPDATE user_infos SET password = ?,  name = ? , mail = ?, salary = ?, auth = ? WHERE id = ?", [password, name, mail, salary, auth, id], (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -77,6 +79,19 @@ app.post('/api/updateUser', (req, res) => {
 // 取打卡紀錄資料
 app.get('/api/getCheckin', (req, res) => {
     db.query("SELECT * FROM checkin_record", (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        res.send(result)
+    })
+})
+
+
+// 取打卡紀錄資料
+app.get('/api/getUserCheckin/:id', (req, res) => {
+    const id = req.params.id;
+    console.log(id)
+    db.query("SELECT * FROM checkin_record WHERE id = ?", [id], (err, result) => {
         if (err) {
             console.log(err)
         }
@@ -179,7 +194,7 @@ app.get('/api/getVacation', (req, res) => {
     })
 })
 
-// 取請假紀錄資料
+// 新增請假資料
 app.post('/api/addVacation', (req, res) => {
 
     const id = req.body.id;
@@ -193,6 +208,51 @@ app.post('/api/addVacation', (req, res) => {
         console.log(result)
         res.send(result)
     });
+})
+
+// 取排班資料
+app.get('/api/getRoster', (req, res) => {
+    db.query("SELECT * FROM roster_record", (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        res.send(result)
+    })
+})
+
+// 新增排班資料
+app.post('/api/addRoster', (req, res) => {
+
+    const id = req.body.id;
+    const year = req.body.year;
+    const month = req.body.month;
+    const day = req.body.day;
+    const night = req.body.night;
+    db.query("INSERT INTO roster_record (id, year, month, day, night) VALUES (?,?,?,?,?)", [id, year, month, day, night], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log(result)
+        res.send(result)
+    })
+})
+
+
+// 更新資料
+app.post('/api/updateRoster', (req, res) => {
+
+    const id = req.body.id;
+    const year = req.body.year;
+    const month = req.body.month;
+    const day = req.body.day;
+    const night = req.body.night;
+    db.query("UPDATE roster_record SET day = ? , night = ? WHERE id = ? AND year = ? AND month = ?", [day, night, id, year, month], (err, result) => {
+        if (err) {
+            console.log(err)
+        }
+        console.log(result)
+        res.send(result)
+    })
 })
 
 app.listen(PORT, () => {

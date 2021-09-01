@@ -58,7 +58,6 @@ class AllCheckInRecord extends Component<AllCheckInRecordProps, AllCheckInRecord
     render() {
         const { userInfo, checkInRecord } = this.props
         const { time, tagSelect, isLogout, checkObj, funcOver } = this.state
-        console.warn(checkInRecord);
         let l = checkInRecord.length > 100 ? checkInRecord.length : 100
         let ary = [];
         for (let i = 0; i < l; i++) {

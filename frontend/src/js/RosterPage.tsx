@@ -1,17 +1,24 @@
 import React, { Component } from 'react';
 import style from '../style/UserPage.module.css';
 import styleCal from '../style/Calendar.module.css';
+import Axios from 'axios';
 
 interface RosterPageProps {
-    checkInRecord: any
+    rosterAll: any
+    rosterRecord: any
     userInfo: any
-    allUserInfo: any
+    allUserInfo: any;
+    getRosterRecord(): void
+    setRosterTime(year: any, month: any): void;
+    setTagSelect(tag: number, func?: string): void
+    rosterYear: number;
+    rosterMonth: number
 }
 interface RosterPageState {
     year: any;
     month: any;
     day: any;
-    rosterRecord: any
+    rosterLocal: any
 }
 
 class RosterPage extends Component<RosterPageProps, RosterPageState> {
@@ -23,24 +30,53 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
             year: this.formatDate(date, 'yyyy'),
             month: parseInt(this.formatDate(date, 'MM')),
             day: parseInt(this.formatDate(date, 'dd')),
-            rosterRecord: {}
+            rosterLocal: {}
         }
     }
 
     componentDidMount = () => {
-        const { allUserInfo, checkInRecord } = this.props
-        const { month, year, day, rosterRecord } = this.state
+        const { allUserInfo, rosterRecord } = this.props
+        const { month, year, day } = this.state
 
         let tmpRoster = rosterRecord;
-        for (let i = 0; i < allUserInfo.length; i++) {
-            let tmp = { day: {}, night: {} };
-            tmpRoster[allUserInfo[i]['name']] = tmp;
+        if (rosterRecord.length === 0) {
+            for (let i = 0; i < allUserInfo.length; i++) {
+                let tmp = { id: allUserInfo[i]['id'], day: {}, night: {} };
+                tmpRoster[allUserInfo[i]['name']] = tmp;
+            }
+
         }
-        console.warn(tmpRoster);
 
         this.setState({
-            rosterRecord: tmpRoster
+            rosterLocal: tmpRoster
         })
+    }
+
+    componentWillUnmount = () => {
+        this.setState = () => false
+    }
+
+    componentDidUpdate = (preProps: any) => {
+        const { allUserInfo, rosterRecord, rosterAll, rosterMonth, rosterYear } = this.props
+        const { month, year, day } = this.state
+
+        if (preProps.rosterMonth !== rosterMonth) {
+
+            let tmpRoster = rosterRecord;
+            if (Object.keys(rosterRecord).length === 0) {
+                for (let i = 0; i < allUserInfo.length; i++) {
+                    let tmp = { day: {}, night: {} };
+                    tmpRoster[allUserInfo[i]['id']] = tmp;
+                }
+
+            }
+
+            this.setState({
+                rosterLocal: tmpRoster
+            })
+
+        }
+
     }
 
     formatDate = (date?: any, fmt?: any, flag?: any) => {
@@ -121,11 +157,12 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
                 year: this.state.year - 1,
                 month: 12
             })
+            this.props.setRosterTime(this.state.year - 1, 12);
         } else {
             this.setState({
                 month: this.state.month - 1
             })
-
+            this.props.setRosterTime(this.state.year, this.state.month - 1);
         }
 
     }
@@ -137,35 +174,105 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
                 year: this.state.year + 1,
                 month: 1
             })
+            this.props.setRosterTime(this.state.year + 1, 1);
         } else {
             this.setState({
                 month: this.state.month + 1
             })
+            this.props.setRosterTime(this.state.year, this.state.month + 1);
         }
     }
 
-    handelClick = (name: any, index: any, type: any) => {
-        console.warn(name, index, type);
-        const { month, year, day, rosterRecord } = this.state
-        let tmp = rosterRecord;
-        if (tmp[name][type][index]) {
-            tmp[name][type][index] = false;
+    handelClick = (id: any, index: any, type: any) => {
+        const { month, year, day, rosterLocal } = this.state
+        let tmp = rosterLocal;
+
+        if (tmp[id][type][index]) {
+            tmp[id][type][index] = 'off';
         } else {
-            tmp[name][type][index] = true;
+            tmp[id][type][index] = 'on';
 
         }
 
         this.setState({
-            rosterRecord: tmp
+            rosterLocal: tmp
         })
+    }
 
-        console.warn(tmp);
+    handleCancel = () => {
+        this.props.setTagSelect(0)
+    }
 
+    handleSave = () => {
+        const { rosterRecord, allUserInfo, rosterMonth, rosterYear, rosterAll } = this.props
+        const { month, year, day, rosterLocal } = this.state
+        let tmp: any = {}
+        for (let i = 0; i < rosterAll.length; i++) {
+            if (rosterAll[i]['month'] === rosterMonth && rosterAll[i]['year'] === rosterYear) {
+                tmp[rosterAll[i]['id']] = true;
+            } else {
+                tmp[rosterAll[i]['id']] = false;
+            }
+        }
+
+        for (let i = 0; i < allUserInfo.length; i++) {
+            let id = allUserInfo[i]['id'];
+            if (tmp[id]) {
+                //update
+                let dayStr = '';
+                let nightStr = '';
+
+                Object.keys(rosterRecord[id]['day']).map((key: any, index: any) => {
+                    if (rosterRecord[id]['day'][key] === 'on') {
+                        dayStr += key
+                        dayStr += ","
+                    }
+                })
+                Object.keys(rosterRecord[id]['night']).map((key: any, index: any) => {
+                    if (rosterRecord[id]['night'][key] === 'on') {
+                        nightStr += key
+                        nightStr += ","
+                    }
+                })
+
+                Axios.post('http://localhost:3002/api/updateRoster', {
+                    day: dayStr,
+                    night: nightStr,
+                    id: id,
+                    year: rosterYear,
+                    month: rosterMonth
+                }).then((data) => { this.props.getRosterRecord() })
+            } else {
+                //add
+                let dayStr = '';
+                let nightStr = '';
+
+                Object.keys(rosterRecord[id]['day']).map((key: any, index: any) => {
+                    if (rosterRecord[id]['day'][key] === 'on') {
+                        dayStr += key
+                        dayStr += ","
+                    }
+                })
+                Object.keys(rosterRecord[id]['night']).map((key: any, index: any) => {
+                    if (rosterRecord[id]['night'][key] === 'on') {
+                        nightStr += key
+                        nightStr += ","
+                    }
+                })
+                Axios.post('http://localhost:3002/api/addRoster', {
+                    id: id,
+                    year: rosterYear,
+                    month: rosterMonth,
+                    day: dayStr,
+                    night: nightStr
+                }).then((data) => { this.props.getRosterRecord() })
+            }
+        }
     }
 
     render() {
-        const { allUserInfo, checkInRecord } = this.props
-        const { month, year, day, rosterRecord } = this.state
+        const { allUserInfo, rosterRecord } = this.props
+        const { month, year, day, rosterLocal } = this.state
 
         let getDays = this.getMonthDays()
 
@@ -178,19 +285,19 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
             <td className={style.DateCol} key={"item_" + item}>{item}</td>
         )
         let node2 = allUserInfo.map((item: any) =>
-            <tr key={"day_" + item['name']}>
+            <tr key={"day_" + item['id']}>
                 <td className={style.NameCol}>{item['name']}</td>
                 {arry1.map((item_1) =>
-                    <td className={style.DateCol} style={{ background: (rosterRecord[item['name']] && rosterRecord[item['name']]['day'][item_1]) ? '#BBFFBB' : "#FFFFFF" }} key={"day_" + item['name'] + item_1} onClick={() => { this.handelClick(item['name'], item_1, "day") }}>{ }</td>
+                    <td className={style.DateCol} style={{ background: (rosterLocal[item['id']] && rosterLocal[item['id']]['day'][item_1] === 'on') ? '#BBFFBB' : "#FFFFFF" }} key={"day_" + item['id'] + item_1} onClick={() => { this.handelClick(item['id'], item_1, "day") }}>{ }</td>
 
                 )}
             </tr>
         )
         let node3 = allUserInfo.map((item: any) =>
-            <tr key={"night_" + item['name']} >
+            <tr key={"night_" + item['id']} >
                 <td className={style.NameCol}>{item['name']}</td>
                 {arry1.map((item_1) =>
-                    <td className={style.DateCol} style={{ background: (rosterRecord[item['name']] && rosterRecord[item['name']]['night'][item_1]) ? '#BBFFBB' : "#FFFFFF" }} key={"night_" + item['name'] + item_1} onClick={() => { this.handelClick(item['name'], item_1, "night") }}>{ }</td>
+                    <td className={style.DateCol} style={{ background: (rosterLocal[item['id']] && rosterLocal[item['id']]['night'][item_1] === 'on') ? '#BBFFBB' : "#FFFFFF" }} key={"night_" + item['id'] + item_1} onClick={() => { this.handelClick(item['id'], item_1, "night") }}>{ }</td>
 
                 )}
             </tr>
@@ -202,8 +309,13 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
                 <div className={style.UserInfo}>
                     <table className={style.UserTable}>
                         <thead>
-                            <tr style={{ background: "#97CBFF", height: "30px" }}>
-                                <th colSpan={getDays + 1}>排班</th>
+                            <tr style={{ background: "#97CBFF", height: "30px", position: 'relative' }}>
+                                <th colSpan={getDays + 1}>排班
+                                    <div className={style.BtnCon} >
+                                        <div className={style.commitBtn} onClick={this.handleSave}>儲存</div>
+                                        <div className={style.cancelBtn} onClick={this.handleCancel}>取消</div>
+                                    </div>
+                                </th>
                             </tr>
                             <tr style={{ background: "#97CBFF", height: "30px", position: 'relative' }}>
                                 <th colSpan={getDays + 1}>

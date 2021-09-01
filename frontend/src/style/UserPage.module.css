@@ -69,3 +69,39 @@ td{
     border-bottom: 10px solid transparent;
     cursor: pointer;
 }
+
+.BtnCon{
+    display: flex;
+    margin: 5px;
+    width: 20%;
+    height: 20px;
+    justify-content: space-around;
+    align-items: center;
+    position:absolute;
+    right: 0px;
+    top:0px
+}
+
+.commitBtn{
+    display: flex;
+    width: 40%;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    background:#E0E0E0;
+    border: 1px solid #ADADAD;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px #e0e0e0;
+}
+
+.cancelBtn{
+    display: flex;
+    width: 40%;
+    height: 20px;
+    justify-content: center;
+    align-items: center;
+    background:#E0E0E0;
+    border: 1px solid #ADADAD;
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px #e0e0e0;
+}

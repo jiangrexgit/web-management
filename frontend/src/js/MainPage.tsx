@@ -14,6 +14,8 @@ import EditPage from './EditPage';
 import VacationRecord from './VacationRecord';
 import DayOffPage from './DayOffPage';
 import RosterPage from './RosterPage';
+import SalaryTestPage from './SalaryTestPage';
+import SalaryRecord from './SalaryRecord';
 
 
 interface MainPageProps {
@@ -31,9 +33,13 @@ interface MainPageState {
     isLogout: boolean;
     checkInRecord: Array<any>;
     vacationRecord: Array<any>;
+    rosterRecord: Array<any>;
+    rosterInAMonth: any;
     checkObj: object;
     funcOver: number;
     editUserInfo: any;
+    rosterYear: number;
+    rosterMonth: number
 }
 
 class MainPage extends Component<MainPageProps, MainPageState> {
@@ -48,29 +54,29 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             isLogout: false,
             checkInRecord: [],
             vacationRecord: [],
+            rosterRecord: [],
             checkObj: {
                 check: 'not',
                 time: ''
             },
             funcOver: -1,
-            editUserInfo: {}
+            editUserInfo: {},
+            rosterMonth: date.getMonth() + 1,
+            rosterYear: date.getFullYear(),
+            rosterInAMonth: {}
         }
     }
 
     componentDidMount = () => {
         setInterval(this.ShowTime, 1000);
-        this.getCheckInRecord()
+        this.getCheckInRecord();
         this.getVacationRecord();
+        this.getRosterRecord();
     }
 
     componentWillUnmount = () => {
         this.setState = () => false;
     }
-
-    // componentDidUpdate = () => {
-    //     console.warn(this.props.userInfo);
-
-    // }
 
     ShowTime = () => {
         let date = new Date();
@@ -110,6 +116,69 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             this.setState({
                 vacationRecord: data.data
             })
+        })
+    }
+
+    getRosterRecord = () => {
+        const { rosterMonth, rosterYear } = this.state
+        Axios.get("http://localhost:3002/api/getRoster").then((data) => {
+
+            let tmp: any = {};
+            for (let i = 0; i < data.data.length; i++) {
+                let tmpObj = data.data[i];
+
+                if (tmpObj['year'] === rosterYear && tmpObj['month'] === rosterMonth) {
+                    let daySpl = tmpObj['day'].split(',')
+                    let dayObj: any = {};
+                    let nightSpl = tmpObj['night'].split(',')
+                    let nightObj: any = {};
+                    for (let j = 0; j < daySpl.length; j++) {
+                        dayObj[daySpl[j]] = 'on'
+                    }
+                    for (let k = 0; k < nightSpl.length; k++) {
+                        nightObj[nightSpl[k]] = 'on'
+
+                    }
+                    let obj = { day: dayObj, night: nightObj }
+                    tmp[tmpObj['id']] = obj;
+                }
+            }
+            this.setState({
+                rosterRecord: data.data,
+                rosterInAMonth: tmp
+            })
+        })
+    }
+
+    setRosterTime = (year: any, month: any) => {
+        const { rosterRecord } = this.state
+        this.setState({
+            rosterYear: year,
+            rosterMonth: month
+        })
+
+        let tmp: any = {};
+        for (let i = 0; i < rosterRecord.length; i++) {
+            let tmpObj = rosterRecord[i];
+
+            if (tmpObj['year'] === Number(year) && tmpObj['month'] === Number(month)) {
+                let daySpl = tmpObj['day'].split(',')
+                let dayObj: any = {};
+                let nightSpl = tmpObj['night'].split(',')
+                let nightObj: any = {};
+                for (let j = 0; j < daySpl.length; j++) {
+                    dayObj[daySpl[j]] = 'on'
+                }
+                for (let k = 0; k < nightSpl.length; k++) {
+                    nightObj[nightSpl[k]] = 'on'
+
+                }
+                let obj = { day: dayObj, night: nightObj }
+                tmp[tmpObj['id']] = obj;
+            }
+        }
+        this.setState({
+            rosterInAMonth: tmp
         })
     }
 
@@ -217,7 +286,6 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                     funcOver: Number(e.currentTarget.id)
                 })
             } else if (e.type === 'mouseout') {
-                console.warn(e.type);
                 this.setState({
                     funcOver: -1
                 })
@@ -227,13 +295,11 @@ class MainPage extends Component<MainPageProps, MainPageState> {
 
     render() {
         const { isSignUp, userInfo, allUserInfo, getUserInfo, setIsSignUp } = this.props
-        const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver, editUserInfo, vacationRecord } = this.state
+        const { time, tagSelect, funcSelect, isLogout, checkObj, checkInRecord, funcOver, editUserInfo, vacationRecord, rosterRecord, rosterInAMonth, rosterYear, rosterMonth } = this.state
         const funcName = [
             { i: 1, name: "人事管理", func: ["帳號管理", "員工資料"], icon: HumanIcon },
-            { i: 2, name: "薪資管理", func: ["薪資試算"], icon: SalaryIcon },
+            { i: 2, name: "薪資管理", func: ["薪資試算", "薪資報表"], icon: SalaryIcon },
             { i: 3, name: "出勤系統", func: ["排班", "請假單", "請假紀錄", "出勤紀錄"], icon: CalendarIcon }]
-
-        if (userInfo['auth'] === 'admin') funcName[1]['func'] = ["薪資試算", "薪資報表"];
 
         return (
             <div className={style.FullPage}>
@@ -290,11 +356,13 @@ class MainPage extends Component<MainPageProps, MainPageState> {
                         {<CheckInRecord checkObj={checkObj} checkInRecord={checkInRecord} userInfo={userInfo} />}
                     </div>}
                     {(tagSelect === 1 && funcSelect === "員工資料") && <UserPage userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setEditUserInfo={this.setEditUserInfo} setTagSelect={this.setTagSelect} />}
-                    {(tagSelect === 3 && funcSelect === "排班") && <RosterPage allUserInfo={allUserInfo} userInfo={userInfo} checkInRecord={checkInRecord} />}
+                    {(tagSelect === 2 && funcSelect === "薪資試算") && <SalaryTestPage userInfo={userInfo} allUserInfo={allUserInfo} rosterRecord={rosterRecord} />}
+                    {(tagSelect === 2 && funcSelect === "薪資報表") && <SalaryRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
+                    {(tagSelect === 3 && funcSelect === "排班") && <RosterPage allUserInfo={allUserInfo} userInfo={userInfo} rosterAll={rosterRecord} rosterRecord={rosterInAMonth} getRosterRecord={this.getRosterRecord} setRosterTime={this.setRosterTime} setTagSelect={this.setTagSelect} rosterYear={rosterYear} rosterMonth={rosterMonth} />}
                     {(tagSelect === 3 && funcSelect === "出勤紀錄") && <AllCheckInRecord userInfo={userInfo} allUserInfo={allUserInfo} checkInRecord={checkInRecord} />}
                     {(tagSelect === 3 && funcSelect === "請假單") && <DayOffPage funcSelect={funcSelect} userInfo={userInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} getVacationRecord={this.getVacationRecord} setTagSelect={this.setTagSelect} />}
                     {(tagSelect === 3 && funcSelect === "請假紀錄") && <VacationRecord userInfo={userInfo} allUserInfo={allUserInfo} vacationRecord={vacationRecord} />}
-                    {(tagSelect === 1 && funcSelect === "帳號管理") && <EditPage funcSelect={funcSelect} userInfo={editUserInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setTagSelect={this.setTagSelect}></EditPage>}
+                    {(tagSelect === 1 && funcSelect === "帳號管理") && <EditPage funcSelect={funcSelect} userInfo={editUserInfo} allUserInfo={allUserInfo} getUserInfo={getUserInfo} setTagSelect={this.setTagSelect} auth={userInfo['auth']}></EditPage>}
                     {(isSignUp) && <InfoPage isSignUp={isSignUp} allUserInfo={allUserInfo} setIsSignUp={setIsSignUp} getUserInfo={getUserInfo}></InfoPage>}
                     {funcName.map((key, index) =>
                         <div key={'FuncList' + (index + 1)} className={style.FuncList} id={String(index)}
