@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import style from '../style/UserPage.module.css';
 import styleCal from '../style/Calendar.module.css';
 import Axios from 'axios';
+import { userInfo } from 'os';
 
 interface RosterPageProps {
     rosterAll: any
@@ -39,12 +40,14 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
         const { month, year, day } = this.state
 
         let tmpRoster = rosterRecord;
-        if (rosterRecord.length === 0) {
-            for (let i = 0; i < allUserInfo.length; i++) {
+        console.warn(rosterRecord);
+        for (let i = 0; i < allUserInfo.length; i++) {
+            if (rosterRecord[allUserInfo[i]['id']]) {
+                tmpRoster[allUserInfo[i]['id']] = rosterRecord[allUserInfo[i]['id']];
+            } else {
                 let tmp = { id: allUserInfo[i]['id'], day: {}, night: {} };
-                tmpRoster[allUserInfo[i]['name']] = tmp;
+                tmpRoster[allUserInfo[i]['id']] = tmp;
             }
-
         }
 
         this.setState({
@@ -63,12 +66,31 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
         if (preProps.rosterMonth !== rosterMonth) {
 
             let tmpRoster = rosterRecord;
-            if (Object.keys(rosterRecord).length === 0) {
-                for (let i = 0; i < allUserInfo.length; i++) {
-                    let tmp = { day: {}, night: {} };
+            for (let i = 0; i < allUserInfo.length; i++) {
+                if (rosterRecord[allUserInfo[i]['id']]) {
+                    tmpRoster[allUserInfo[i]['id']] = rosterRecord[allUserInfo[i]['id']];
+                } else {
+                    let tmp = { id: allUserInfo[i]['id'], day: {}, night: {} };
                     tmpRoster[allUserInfo[i]['id']] = tmp;
                 }
+            }
 
+            this.setState({
+                rosterLocal: tmpRoster
+            })
+
+        }
+
+        if (preProps.allUserInfo !== allUserInfo) {
+
+            let tmpRoster = rosterRecord;
+            for (let i = 0; i < allUserInfo.length; i++) {
+                if (rosterRecord[allUserInfo[i]['id']]) {
+                    tmpRoster[allUserInfo[i]['id']] = rosterRecord[allUserInfo[i]['id']];
+                } else {
+                    let tmp = { id: allUserInfo[i]['id'], day: {}, night: {} };
+                    tmpRoster[allUserInfo[i]['id']] = tmp;
+                }
             }
 
             this.setState({
@@ -184,19 +206,21 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
     }
 
     handelClick = (id: any, index: any, type: any) => {
-        const { month, year, day, rosterLocal } = this.state
-        let tmp = rosterLocal;
+        const { month, year, day, rosterLocal } = this.state;
+        if (this.props.userInfo['auth'] === 'admin') {
+            let tmp = rosterLocal;
 
-        if (tmp[id][type][index]) {
-            tmp[id][type][index] = 'off';
-        } else {
-            tmp[id][type][index] = 'on';
+            if (tmp[id][type][index]) {
+                tmp[id][type][index] = 'off';
+            } else {
+                tmp[id][type][index] = 'on';
 
+            }
+
+            this.setState({
+                rosterLocal: tmp
+            })
         }
-
-        this.setState({
-            rosterLocal: tmp
-        })
     }
 
     handleCancel = () => {
@@ -271,7 +295,7 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
     }
 
     render() {
-        const { allUserInfo, rosterRecord } = this.props
+        const { allUserInfo, rosterRecord, userInfo } = this.props
         const { month, year, day, rosterLocal } = this.state
 
         let getDays = this.getMonthDays()
@@ -311,10 +335,10 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
                         <thead>
                             <tr style={{ background: "#97CBFF", height: "30px", position: 'relative' }}>
                                 <th colSpan={getDays + 1}>排班
-                                    <div className={style.BtnCon} >
+                                    {userInfo['auth'] === 'admin' && <div className={style.BtnCon} >
                                         <div className={style.commitBtn} onClick={this.handleSave}>儲存</div>
                                         <div className={style.cancelBtn} onClick={this.handleCancel}>取消</div>
-                                    </div>
+                                    </div>}
                                 </th>
                             </tr>
                             <tr style={{ background: "#97CBFF", height: "30px", position: 'relative' }}>
