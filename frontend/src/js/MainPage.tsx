@@ -127,7 +127,7 @@ class MainPage extends Component<MainPageProps, MainPageState> {
             for (let i = 0; i < data.data.length; i++) {
                 let tmpObj = data.data[i];
 
-                if (tmpObj['year'] === rosterYear && tmpObj['month'] === rosterMonth) {
+                if (tmpObj['year'] === Number(rosterYear) && tmpObj['month'] === Number(rosterMonth)) {
                     let daySpl = tmpObj['day'].split(',')
                     let dayObj: any = {};
                     let nightSpl = tmpObj['night'].split(',')

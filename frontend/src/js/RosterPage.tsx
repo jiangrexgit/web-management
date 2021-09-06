@@ -40,7 +40,6 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
         const { month, year, day } = this.state
 
         let tmpRoster = rosterRecord;
-        console.warn(rosterRecord);
         for (let i = 0; i < allUserInfo.length; i++) {
             if (rosterRecord[allUserInfo[i]['id']]) {
                 tmpRoster[allUserInfo[i]['id']] = rosterRecord[allUserInfo[i]['id']];
@@ -224,7 +223,8 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
     }
 
     handleCancel = () => {
-        this.props.setTagSelect(0)
+        this.props.setTagSelect(0);
+        this.props.getRosterRecord();
     }
 
     handleSave = () => {
@@ -245,7 +245,7 @@ class RosterPage extends Component<RosterPageProps, RosterPageState> {
                 //update
                 let dayStr = '';
                 let nightStr = '';
-
+                
                 Object.keys(rosterRecord[id]['day']).map((key: any, index: any) => {
                     if (rosterRecord[id]['day'][key] === 'on') {
                         dayStr += key
